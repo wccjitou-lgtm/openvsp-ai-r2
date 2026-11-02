@@ -1538,20 +1538,49 @@ class Designer:
             # recommendation 只能是 diagnostic_only；不能冒充已验证可行。
             from .contracts import ConstraintResult, aggregate_constraints
             constraints = []
+            # 只有用户明确给出的技术硬约束才进入 hard 集合；其余经验准则为 advisory。
+            hard_ids = set()
+            if getattr(spec, "stall_speed_max_ms", None):
+                hard_ids.add("stall_speed")
             for item in (metrics["design_criteria"].get("checks") or []):
                 raw_status = str(item.get("status") or "unknown")
                 status = "pass" if raw_status == "pass" else (
                     "fail" if raw_status == "fail" else "unknown")
+                cid = str(item.get("id") or "criterion")
+                is_hard = cid in hard_ids
                 constraints.append(ConstraintResult(
-                    constraint_id=str(item.get("id") or "criterion"),
-                    quantity=str(item.get("name") or item.get("id") or "criterion"),
+                    constraint_id=cid,
+                    quantity=str(item.get("name") or cid),
                     status=status,
                     value=item.get("value") if isinstance(item.get("value"), (int, float)) else None,
                     limit=(item.get("high") if isinstance(item.get("high"), (int, float)) else None),
                     unit=str(item.get("unit") or ""),
-                    hard=False,
-                    reason_code=None if status == "pass" else "ADVISORY_RULE",
+                    hard=is_hard,
+                    reason_code=(None if status == "pass" else
+                                 ("HARD_TECHNICAL_CONSTRAINT" if is_hard else "ADVISORY_RULE")),
                     note=str(item.get("note") or ""),
+                ))
+            # 显式翼展上限是用户技术输入，保留为硬约束。
+            max_span = getattr(spec, "max_span_m", None)
+            if max_span:
+                actual_span = (metrics.get("design") or {}).get("actual_span_m")
+                try:
+                    actual_span = float(actual_span) if actual_span is not None else None
+                except (TypeError, ValueError):
+                    actual_span = None
+                span_status = ("unknown" if actual_span is None
+                               else ("pass" if actual_span <= float(max_span) * (1.0 + 1e-9)
+                                     else "fail"))
+                constraints.append(ConstraintResult(
+                    constraint_id="span_max",
+                    quantity="翼展上限",
+                    status=span_status,
+                    value=actual_span,
+                    limit=float(max_span),
+                    unit="m",
+                    hard=True,
+                    reason_code=None if span_status == "pass" else "HARD_TECHNICAL_CONSTRAINT",
+                    note="用户显式翼展约束",
                 ))
             criteria = metrics["design_criteria"]
             metrics["design_advisories"] = {
