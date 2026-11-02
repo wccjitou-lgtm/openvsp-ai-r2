@@ -1,0 +1,1001 @@
+{
+  "manifest_version": "1.0",
+  "status": "draft_baseline_pending_review",
+  "created_at": "2026-11-02T13:56:35+08:00",
+  "root": "D:\\Zcoding\\OpenVSP-R2",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python_executable": "C:\\Users\\Lenovo\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]"
+  },
+  "openvsp_root": "D:\\Zcoding\\OpenVSP-3.51.3-win64",
+  "openvsp_version": "3.51.3",
+  "file_count": 197,
+  "files": [
+    {
+      "path": "ai\\ai_design\\__init__.py",
+      "size": 1596,
+      "sha256": "a84ea56e22b0d06a972229b19bdc7edd3ff7409273912251f7d9aa75b1417674"
+    },
+    {
+      "path": "ai\\ai_design\\_degen_worker.py",
+      "size": 3927,
+      "sha256": "09466d11a96523bc1c61723208b4cf2dc03df2e247f6cee6434f4878e54c962b"
+    },
+    {
+      "path": "ai\\ai_design\\agent.py",
+      "size": 25733,
+      "sha256": "486db991717b4355b9b9d4c233c7bbed9233f220f9e66ff20187a5b833b257a8"
+    },
+    {
+      "path": "ai\\ai_design\\airfoils.py",
+      "size": 13949,
+      "sha256": "d501f412eae9eb494c79c978f4624b8da69dfb42184dc93abf64c2371a1906c4"
+    },
+    {
+      "path": "ai\\ai_design\\attachments.py",
+      "size": 18233,
+      "sha256": "4a26ddf0ba38088c8a2b86566a0a62bcea8e75796834a08b5b97ea2d6bbf6b02"
+    },
+    {
+      "path": "ai\\ai_design\\config.py",
+      "size": 22346,
+      "sha256": "d626cc9268052e5ef91940005e3f91147cb6390dd2fc51b70fa1f4aa31ec5950"
+    },
+    {
+      "path": "ai\\ai_design\\contracts.py",
+      "size": 7603,
+      "sha256": "00d2aacea2c4a408249ea8e4edd9b387a4e3165f81e0a0847d21c2602d354f9e"
+    },
+    {
+      "path": "ai\\ai_design\\criteria.py",
+      "size": 16150,
+      "sha256": "923836901f47126af35550ec1979b88e807ec0c4cf626fcf507f59493ec5661d"
+    },
+    {
+      "path": "ai\\ai_design\\designer.py",
+      "size": 98481,
+      "sha256": "a339450fbed3f949dcbee8084ff273521f59b6184400da0218956b97bd1a1f15"
+    },
+    {
+      "path": "ai\\ai_design\\fuselage_rules.py",
+      "size": 10618,
+      "sha256": "09ec77c92f67d7f6fe34dc4b22e65bb0349cbe6014aeb085b8baf21e4281b287"
+    },
+    {
+      "path": "ai\\ai_design\\ga_optimizer.py",
+      "size": 50566,
+      "sha256": "26e9359adc1a41bd17ebf98350b095ea2bff21a9561ad7c041b1fee0dee65dd0"
+    },
+    {
+      "path": "ai\\ai_design\\logging_util.py",
+      "size": 6224,
+      "sha256": "4a854d7f961aa425fcef6c2c074fac6587f675d04d4f872232c7a5296449806a"
+    },
+    {
+      "path": "ai\\ai_design\\providers.py",
+      "size": 13694,
+      "sha256": "f080b4864ee11d4d25db6aa67ca6125ca6b10bcb0630585ce5014feead36082a"
+    },
+    {
+      "path": "ai\\ai_design\\report.py",
+      "size": 65103,
+      "sha256": "19ba8b9ccaa1a9a83034f2feb995345ba3df77ce895ccd07d3e3577410f0ac8f"
+    },
+    {
+      "path": "ai\\ai_design\\requirements.py",
+      "size": 9346,
+      "sha256": "0cfd3565993df348386609775a62733aac1a2ebe0e4b9342fa9d1e11411166fe"
+    },
+    {
+      "path": "ai\\ai_design\\run_store.py",
+      "size": 2305,
+      "sha256": "042579efcd9dd86dad796674e1d5fc5d4232ac834b3716552dce8505300ea70b"
+    },
+    {
+      "path": "ai\\ai_design\\stability_guard.py",
+      "size": 4967,
+      "sha256": "a46d3c45490a0f4ae7bd176426e72412b915879d4f764b85d5e2650e5221ba62"
+    },
+    {
+      "path": "ai\\ai_design\\tools.py",
+      "size": 29925,
+      "sha256": "dfbdb5abcf679e90d5d75bcad80df65860ed917a8fd406d6e40485a90f1e2aa7"
+    },
+    {
+      "path": "ai\\ai_design\\vsp_bridge.py",
+      "size": 84183,
+      "sha256": "5c48f70cc58a458a3b088cbb855a78121de585be900897407ab103da41f27706"
+    },
+    {
+      "path": "ai\\tests\\conftest.py",
+      "size": 484,
+      "sha256": "2aabd447e7f137d0e070e69e5edd75c23d8eec80cdff36e37d89f5c86334c384"
+    },
+    {
+      "path": "ai\\tests\\test_agent.py",
+      "size": 19254,
+      "sha256": "7df71d892597a8604fa9a58cfb352c5dc3173d745d928b1a33419b01566db00f"
+    },
+    {
+      "path": "ai\\tests\\test_airfoils.py",
+      "size": 2095,
+      "sha256": "8e8802203aff2974e69a6af4b412cf697603bea482fa123af062f7a3bee19b0d"
+    },
+    {
+      "path": "ai\\tests\\test_attachments.py",
+      "size": 8878,
+      "sha256": "49619762f0933fa69ad6fc60652c7acd4143b81b5271756561fb956947a78fe9"
+    },
+    {
+      "path": "ai\\tests\\test_bridge_parse.py",
+      "size": 6245,
+      "sha256": "5dac9d77c3f4117bdb968e5de9677896313f05d595fcfb298b70ca3a968e2cd2"
+    },
+    {
+      "path": "ai\\tests\\test_case_model.py",
+      "size": 15702,
+      "sha256": "409e35e36e7649708c27e48ed4a4b293202049eb4fd93ab6f9cc95d3b7f4712f"
+    },
+    {
+      "path": "ai\\tests\\test_config.py",
+      "size": 10821,
+      "sha256": "4ed0a61f5ea3bd23155d3444cbf88663e384757551a7f2e3b09e73a46cddec53"
+    },
+    {
+      "path": "ai\\tests\\test_criteria.py",
+      "size": 1657,
+      "sha256": "7f09fffa2c8ac433d2a5ae1543c504c6cde8756dee7d197dba92b11806cab2ef"
+    },
+    {
+      "path": "ai\\tests\\test_designer_regressions.py",
+      "size": 3078,
+      "sha256": "7f399c70fc171ce734f0e76fe0c02564f8396929621481460065cd6cefcab18a"
+    },
+    {
+      "path": "ai\\tests\\test_fuselage_rules.py",
+      "size": 4743,
+      "sha256": "932d6ddc9cc53fcb02e4f8be5375a7feabbed54c89715cf016d96c3306c83e92"
+    },
+    {
+      "path": "ai\\tests\\test_ga_optimizer.py",
+      "size": 11019,
+      "sha256": "7b4aad8ce44f68e9c5cb0e92bcfda142a716eb0b216b9f154d539896768d8224"
+    },
+    {
+      "path": "ai\\tests\\test_layouts.py",
+      "size": 1254,
+      "sha256": "fde34d4d71b90666d343129116ef1fe1cef1bfd69c901be59a552d5cfcbf3e63"
+    },
+    {
+      "path": "ai\\tests\\test_offline_e2e.py",
+      "size": 14100,
+      "sha256": "7d58dbf45efb3fe655e01ac8d625dd73a1f99328d1988fb9f20115b333268341"
+    },
+    {
+      "path": "ai\\tests\\test_providers.py",
+      "size": 7435,
+      "sha256": "3a58d86824d4c5b3183989771f60b663fe670470150b3f1921d38342fbe2574e"
+    },
+    {
+      "path": "ai\\tests\\test_reliable_contracts.py",
+      "size": 3666,
+      "sha256": "0ad663f395d9e490a7b71b303b7eb42b2a84ae934699e5ceb8e48cff7f9c6bdf"
+    },
+    {
+      "path": "ai\\tests\\test_report.py",
+      "size": 9161,
+      "sha256": "7d7ad8525e52fdf20f4390c35b1908adae5098424b63c898fd0051c3883e26e9"
+    },
+    {
+      "path": "ai\\tests\\test_run_store.py",
+      "size": 1125,
+      "sha256": "b5e99e250d5abff3909edf8a0ab820cc3e0eb49972324e00e43e8bb65708895b"
+    },
+    {
+      "path": "ai\\tests\\test_stability_guard.py",
+      "size": 1738,
+      "sha256": "ed89e91a5574a438d7682e86dcb05024492a327099c2174d218403db0041dd4c"
+    },
+    {
+      "path": "ai\\templates\\build_template.py",
+      "size": 4789,
+      "sha256": "b480e7f43e2bb9f427027deaf045916b6eb046915c198a66e01f3da757359f99"
+    },
+    {
+      "path": "ai\\templates\\design_report_template.docx",
+      "size": 38077,
+      "sha256": "c88d334d1d35db35b16d38641767f34c61d0cd84369a8d914456a4fd36871a3b"
+    },
+    {
+      "path": "ai\\templates\\README.md",
+      "size": 1872,
+      "sha256": "2289199af3722846fae968fefb3226c2c43dc5afe3694bd1771cb498440347e7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\12-可靠设计软件改造开发方案.md",
+      "size": 43012,
+      "sha256": "dc50fb180cce0f4562ec29b5e448813ded02758bacd3c05d3c3da89f5ed3be8e"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\12-可靠设计软件改造开发方案.pdf",
+      "size": 592271,
+      "sha256": "4672f4cd95ef1c3ae27c4ffc7172ba7db281f442179a279a61a0d4d6124afbc2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\12-可靠设计软件改造开发方案_extracted.txt",
+      "size": 48385,
+      "sha256": "fcf8fca511ca0a3fc21f0adbe91766f59ac8c86ed84603a78323ccf9b9a19ed9"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\13-可靠设计软件验收测试规范.md",
+      "size": 54995,
+      "sha256": "38fd90092f701cb978ea76cc979d81bde565bf7722e169e99f73dcb66fe349fe"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\13-可靠设计软件验收测试规范.pdf",
+      "size": 609090,
+      "sha256": "1ee4067fa77b052d86d5ed0b44f20b6f485d5baf137f9eb8dc11e7728804a66c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\13-可靠设计软件验收测试规范_extracted.txt",
+      "size": 59195,
+      "sha256": "a45bf34073698ebc7c4e7d34d97da26444c7e869d39146e785c309db15033feb"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\14-OpenVSP-R2-软件优化方案.docx",
+      "size": 56155,
+      "sha256": "6101074728915f010a6dcf25bb752d087e5c425abf4dee639d5f8495cbeb9740"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\14-OpenVSP-R2-软件优化方案.md",
+      "size": 30378,
+      "sha256": "3168170023e740e92afc5e86e684b0686e8cee1fd3f2a78099d8ead0a2761ac4"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\14-OpenVSP-R2-软件优化方案.pdf",
+      "size": 675122,
+      "sha256": "0a7ecff252c2ea15804e50334ae26f8741dd20c49b2ba2113f61dd561c7f3071"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\contact-1.png",
+      "size": 651680,
+      "sha256": "7c06e140e58c5b4821862806185089317b054f426c4815749d410358c9eeda74"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\contact-2.png",
+      "size": 520301,
+      "sha256": "2e37407ca6f1c884c454a21b3797bfc09bed0007c6a603f1cf55a445d3fb6bb5"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-01.png",
+      "size": 101841,
+      "sha256": "9bf463892e6667570f08ae1d115219c5e5a48323bc7869d45be9004c17454d28"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-02.png",
+      "size": 273924,
+      "sha256": "1d3371cea62c397e652bae2eaa98751d434688880ab56506320cb09741e06329"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-03.png",
+      "size": 182389,
+      "sha256": "5645a5d2fc5cac21f8dd5c6376a2d1170e9adfc4ca1988b9b248c6223f43ecc1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-04.png",
+      "size": 193541,
+      "sha256": "4b8da22de607b2b92a9b5d2ca2f1b7934add652229da6c62994f6f8439ad7136"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-05.png",
+      "size": 145052,
+      "sha256": "4b637648e1037191a1d2240b633ac83d23bb31a6e53359f99e1310cc18197be7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-06.png",
+      "size": 215878,
+      "sha256": "70a658ae2319dd10e09e96290f95d95637860622f2c4902b0c5b1fb5b33d79ef"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-07.png",
+      "size": 262256,
+      "sha256": "c5fcd25a262d824fbb82fda093777f0a77646814cd9c232e883379d0d72dd8e3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-08.png",
+      "size": 233755,
+      "sha256": "28a9a38666a28c7c38bac367ad43110a7be931fdbbd03e469924ac5986bb5805"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-09.png",
+      "size": 276110,
+      "sha256": "e1f524c85785f6427dec72d33f9a95b443392b825971b59d104415d5191f1a6d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-10.png",
+      "size": 271413,
+      "sha256": "c4d2dfc1c4705c6107b64517e6b5d72341b9e36b8d654a1faa5183a753fdee4e"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-11.png",
+      "size": 256297,
+      "sha256": "3e51ad007d5951051c5f70f24e65dfa0546854208615e15cdb8a24465b8b92a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-12.png",
+      "size": 288501,
+      "sha256": "50b2bb2090cb0bb575bb7165f81f1a28c26c9fbd991517661e5c7596794b4364"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-13.png",
+      "size": 209247,
+      "sha256": "c1d1118862ffefd6139781a8c9ed4bf4f8d479865ee0f10170999b50aa14b8ce"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-14.png",
+      "size": 261914,
+      "sha256": "d87d000dd5fba210c685beede94fec70bedbeaf6fa279c821c0170148d50eb13"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\4672f4cd95ef\\page-15.png",
+      "size": 234577,
+      "sha256": "ae98743572b0dfe676402f9bbf41928020181d13129773f1e72de4d94ea75569"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\contact-1.png",
+      "size": 651680,
+      "sha256": "7c06e140e58c5b4821862806185089317b054f426c4815749d410358c9eeda74"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\contact-2.png",
+      "size": 520301,
+      "sha256": "2e37407ca6f1c884c454a21b3797bfc09bed0007c6a603f1cf55a445d3fb6bb5"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-01.png",
+      "size": 101841,
+      "sha256": "9bf463892e6667570f08ae1d115219c5e5a48323bc7869d45be9004c17454d28"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-02.png",
+      "size": 273924,
+      "sha256": "1d3371cea62c397e652bae2eaa98751d434688880ab56506320cb09741e06329"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-03.png",
+      "size": 182389,
+      "sha256": "5645a5d2fc5cac21f8dd5c6376a2d1170e9adfc4ca1988b9b248c6223f43ecc1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-04.png",
+      "size": 193541,
+      "sha256": "4b8da22de607b2b92a9b5d2ca2f1b7934add652229da6c62994f6f8439ad7136"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-05.png",
+      "size": 145052,
+      "sha256": "4b637648e1037191a1d2240b633ac83d23bb31a6e53359f99e1310cc18197be7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-06.png",
+      "size": 215878,
+      "sha256": "70a658ae2319dd10e09e96290f95d95637860622f2c4902b0c5b1fb5b33d79ef"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-07.png",
+      "size": 262256,
+      "sha256": "c5fcd25a262d824fbb82fda093777f0a77646814cd9c232e883379d0d72dd8e3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-08.png",
+      "size": 233755,
+      "sha256": "28a9a38666a28c7c38bac367ad43110a7be931fdbbd03e469924ac5986bb5805"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-09.png",
+      "size": 276110,
+      "sha256": "e1f524c85785f6427dec72d33f9a95b443392b825971b59d104415d5191f1a6d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-10.png",
+      "size": 271413,
+      "sha256": "c4d2dfc1c4705c6107b64517e6b5d72341b9e36b8d654a1faa5183a753fdee4e"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-11.png",
+      "size": 256297,
+      "sha256": "3e51ad007d5951051c5f70f24e65dfa0546854208615e15cdb8a24465b8b92a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-12.png",
+      "size": 288501,
+      "sha256": "50b2bb2090cb0bb575bb7165f81f1a28c26c9fbd991517661e5c7596794b4364"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-13.png",
+      "size": 209247,
+      "sha256": "c1d1118862ffefd6139781a8c9ed4bf4f8d479865ee0f10170999b50aa14b8ce"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-14.png",
+      "size": 261914,
+      "sha256": "d87d000dd5fba210c685beede94fec70bedbeaf6fa279c821c0170148d50eb13"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\655812c22a44\\page-15.png",
+      "size": 234577,
+      "sha256": "ae98743572b0dfe676402f9bbf41928020181d13129773f1e72de4d94ea75569"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\contact-1.png",
+      "size": 651680,
+      "sha256": "7c06e140e58c5b4821862806185089317b054f426c4815749d410358c9eeda74"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\contact-2.png",
+      "size": 609836,
+      "sha256": "750a0ca0db585079a5261b037c3986dbd3eabe9803138662c12451e8adc6cbba"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-01.png",
+      "size": 101841,
+      "sha256": "9bf463892e6667570f08ae1d115219c5e5a48323bc7869d45be9004c17454d28"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-02.png",
+      "size": 273924,
+      "sha256": "1d3371cea62c397e652bae2eaa98751d434688880ab56506320cb09741e06329"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-03.png",
+      "size": 182389,
+      "sha256": "5645a5d2fc5cac21f8dd5c6376a2d1170e9adfc4ca1988b9b248c6223f43ecc1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-04.png",
+      "size": 193541,
+      "sha256": "4b8da22de607b2b92a9b5d2ca2f1b7934add652229da6c62994f6f8439ad7136"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-05.png",
+      "size": 145052,
+      "sha256": "4b637648e1037191a1d2240b633ac83d23bb31a6e53359f99e1310cc18197be7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-06.png",
+      "size": 215878,
+      "sha256": "70a658ae2319dd10e09e96290f95d95637860622f2c4902b0c5b1fb5b33d79ef"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-07.png",
+      "size": 262256,
+      "sha256": "c5fcd25a262d824fbb82fda093777f0a77646814cd9c232e883379d0d72dd8e3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-08.png",
+      "size": 233755,
+      "sha256": "28a9a38666a28c7c38bac367ad43110a7be931fdbbd03e469924ac5986bb5805"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-09.png",
+      "size": 276110,
+      "sha256": "e1f524c85785f6427dec72d33f9a95b443392b825971b59d104415d5191f1a6d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-10.png",
+      "size": 271413,
+      "sha256": "c4d2dfc1c4705c6107b64517e6b5d72341b9e36b8d654a1faa5183a753fdee4e"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-11.png",
+      "size": 256297,
+      "sha256": "3e51ad007d5951051c5f70f24e65dfa0546854208615e15cdb8a24465b8b92a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-12.png",
+      "size": 288501,
+      "sha256": "50b2bb2090cb0bb575bb7165f81f1a28c26c9fbd991517661e5c7596794b4364"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-13.png",
+      "size": 209247,
+      "sha256": "c1d1118862ffefd6139781a8c9ed4bf4f8d479865ee0f10170999b50aa14b8ce"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-14.png",
+      "size": 261914,
+      "sha256": "d87d000dd5fba210c685beede94fec70bedbeaf6fa279c821c0170148d50eb13"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-15.png",
+      "size": 234577,
+      "sha256": "ae98743572b0dfe676402f9bbf41928020181d13129773f1e72de4d94ea75569"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\12\\page-16.png",
+      "size": 234628,
+      "sha256": "ae1478f78d73cefcc7925c178421e3ff7b1b61b496527dd492deb8acae587580"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\contact-1.png",
+      "size": 632945,
+      "sha256": "f240d795908682e98c808ce1654c7b054ed1d2810d53a15cf0c2ea3d5f7019a7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\contact-2.png",
+      "size": 556610,
+      "sha256": "2cf318664f1ad559e5f1d50f2057bef3c4d77e3a6abc18593e21cd014c08a0e9"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\contact-3.png",
+      "size": 234075,
+      "sha256": "b22559f38d00ce0d5e23fddd57a3c34aca5ce83ddde4625be509383208adf9f7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-01.png",
+      "size": 70304,
+      "sha256": "8f398ded578ceff83581d09f9f40cd6f3285388520cf61fcf2ffc093d724db76"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-02.png",
+      "size": 326237,
+      "sha256": "eee1789d4dccd3615a304547fcfa863ac9e4885812aaadebf836ff0ff06f27a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-03.png",
+      "size": 344974,
+      "sha256": "a183c66c8a2d1c23d0c2789c3fa24ad4c42a0f65b4c434a212f588e2c43a8464"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-04.png",
+      "size": 236402,
+      "sha256": "12763ba26fbf3fd41c6d4fae7c6b52ff4b62416d06ff1c38f890dd67822b2590"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-05.png",
+      "size": 192039,
+      "sha256": "786ef35d25245aa1c99cbeddabf52dcb09cc4edec4f41550e798dca5306e6cfe"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-06.png",
+      "size": 195861,
+      "sha256": "182c687a7dfc45e3dc9ae37dcdb76c116806f8719cbf1882fd3067ab8f203688"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-07.png",
+      "size": 191893,
+      "sha256": "2a3f0e3de4960e087fadb43d7e97b37c82fcbe871c62c4a1b691503344cc743c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-08.png",
+      "size": 197349,
+      "sha256": "4f0dbd6783033c3d37cff23f407a0308083af5756da8d7bfef9f6f9f46e58214"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-09.png",
+      "size": 201416,
+      "sha256": "4a221aef60ead4ac7224a29463297fcdc14d72452070c8e6d884331df07422c3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-10.png",
+      "size": 203849,
+      "sha256": "c540ba7880637bc97958048674349e84853561a3d2bb705c3bd0ddcdeb3d17e1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-11.png",
+      "size": 203106,
+      "sha256": "95bd06e1aab0f23bb54ab891d98228ae841e92f9a81f6168ed7949e65901a064"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-12.png",
+      "size": 198000,
+      "sha256": "ffd0f930869a904a6177ae03b07ca94b268aec707a699773fff04d7e225c6f9b"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-13.png",
+      "size": 201519,
+      "sha256": "a9662a3d0b9655b335f7e084a28478fcb7e0969af4f54a96f64f21c8e37b3b8d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-14.png",
+      "size": 212918,
+      "sha256": "4e7e831fdc6c7743ab166265655edf1c09bc9412f19c340fb256c842451c3148"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-15.png",
+      "size": 204880,
+      "sha256": "75c567e574adb9afb47ea7a29b944a9a2b2a094a6374febbf16dcf398c792c1f"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-16.png",
+      "size": 201705,
+      "sha256": "636b4da3302047f41247b78b111857966d44408cacc663c885a414dc5565356c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-17.png",
+      "size": 203015,
+      "sha256": "60eed25e69a2399458a2e80a640872c401ae3b8c6166a1d1da9d17e162a553b7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-18.png",
+      "size": 214828,
+      "sha256": "9ff1ed23a34179350d5e2f80caf98fa7a9bc5d75e78a4d9e4bd41e46b3d009f5"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-19.png",
+      "size": 211749,
+      "sha256": "74fa564a5ab187639f40e300aecff5c46e2bd67bb2899178c2f93a16a009c4cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-20.png",
+      "size": 299119,
+      "sha256": "137cb248cba2d79ea54fa78bcec46f8023ac8bde194038c7dd910d6a72e6ce85"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\1ee4067fa77b\\page-21.png",
+      "size": 189818,
+      "sha256": "9e13ecbf0f92f6e0d2513c65471d84453db477d0a17f048d3e1e4472537e9e14"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\contact-1.png",
+      "size": 632932,
+      "sha256": "1cf5535eed1d7f62c0ff13a05b416e53e34bebceca8ff4e65f7a78f91f3e4933"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\contact-2.png",
+      "size": 540453,
+      "sha256": "fd729aa86fa6ea5d71d8d070d3392ca7c8fa9c2b4ce8219c8541f76aa5853e44"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\contact-3.png",
+      "size": 234075,
+      "sha256": "b22559f38d00ce0d5e23fddd57a3c34aca5ce83ddde4625be509383208adf9f7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-01.png",
+      "size": 70221,
+      "sha256": "3390f2eb0e3c1d2d82dfbf64d9d3a99b803fa2c7aafe9d328bb2030cda82b65b"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-02.png",
+      "size": 326237,
+      "sha256": "eee1789d4dccd3615a304547fcfa863ac9e4885812aaadebf836ff0ff06f27a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-03.png",
+      "size": 344974,
+      "sha256": "a183c66c8a2d1c23d0c2789c3fa24ad4c42a0f65b4c434a212f588e2c43a8464"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-04.png",
+      "size": 236402,
+      "sha256": "12763ba26fbf3fd41c6d4fae7c6b52ff4b62416d06ff1c38f890dd67822b2590"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-05.png",
+      "size": 192039,
+      "sha256": "786ef35d25245aa1c99cbeddabf52dcb09cc4edec4f41550e798dca5306e6cfe"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-06.png",
+      "size": 195861,
+      "sha256": "182c687a7dfc45e3dc9ae37dcdb76c116806f8719cbf1882fd3067ab8f203688"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-07.png",
+      "size": 191893,
+      "sha256": "2a3f0e3de4960e087fadb43d7e97b37c82fcbe871c62c4a1b691503344cc743c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-08.png",
+      "size": 197349,
+      "sha256": "4f0dbd6783033c3d37cff23f407a0308083af5756da8d7bfef9f6f9f46e58214"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-09.png",
+      "size": 201416,
+      "sha256": "4a221aef60ead4ac7224a29463297fcdc14d72452070c8e6d884331df07422c3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-10.png",
+      "size": 203849,
+      "sha256": "c540ba7880637bc97958048674349e84853561a3d2bb705c3bd0ddcdeb3d17e1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-11.png",
+      "size": 203106,
+      "sha256": "95bd06e1aab0f23bb54ab891d98228ae841e92f9a81f6168ed7949e65901a064"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-12.png",
+      "size": 198000,
+      "sha256": "ffd0f930869a904a6177ae03b07ca94b268aec707a699773fff04d7e225c6f9b"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-13.png",
+      "size": 201519,
+      "sha256": "a9662a3d0b9655b335f7e084a28478fcb7e0969af4f54a96f64f21c8e37b3b8d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-14.png",
+      "size": 212918,
+      "sha256": "4e7e831fdc6c7743ab166265655edf1c09bc9412f19c340fb256c842451c3148"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-15.png",
+      "size": 204880,
+      "sha256": "75c567e574adb9afb47ea7a29b944a9a2b2a094a6374febbf16dcf398c792c1f"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-16.png",
+      "size": 201705,
+      "sha256": "636b4da3302047f41247b78b111857966d44408cacc663c885a414dc5565356c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-17.png",
+      "size": 208551,
+      "sha256": "39329c485129485f0244ab036bf0136757f30c3149b749c31f21a43ff5ad06cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-18.png",
+      "size": 209653,
+      "sha256": "c32bdba1567988e43da6a359d36864261b86b6d3fdbc70f02aa06f63a5862dbf"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-19.png",
+      "size": 211749,
+      "sha256": "74fa564a5ab187639f40e300aecff5c46e2bd67bb2899178c2f93a16a009c4cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-20.png",
+      "size": 299119,
+      "sha256": "137cb248cba2d79ea54fa78bcec46f8023ac8bde194038c7dd910d6a72e6ce85"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\5f0bafb2addc\\page-21.png",
+      "size": 189818,
+      "sha256": "9e13ecbf0f92f6e0d2513c65471d84453db477d0a17f048d3e1e4472537e9e14"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\contact-1.png",
+      "size": 632932,
+      "sha256": "1cf5535eed1d7f62c0ff13a05b416e53e34bebceca8ff4e65f7a78f91f3e4933"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\contact-2.png",
+      "size": 540453,
+      "sha256": "fd729aa86fa6ea5d71d8d070d3392ca7c8fa9c2b4ce8219c8541f76aa5853e44"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\contact-3.png",
+      "size": 234075,
+      "sha256": "b22559f38d00ce0d5e23fddd57a3c34aca5ce83ddde4625be509383208adf9f7"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-01.png",
+      "size": 70221,
+      "sha256": "3390f2eb0e3c1d2d82dfbf64d9d3a99b803fa2c7aafe9d328bb2030cda82b65b"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-02.png",
+      "size": 326237,
+      "sha256": "eee1789d4dccd3615a304547fcfa863ac9e4885812aaadebf836ff0ff06f27a2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-03.png",
+      "size": 344974,
+      "sha256": "a183c66c8a2d1c23d0c2789c3fa24ad4c42a0f65b4c434a212f588e2c43a8464"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-04.png",
+      "size": 236402,
+      "sha256": "12763ba26fbf3fd41c6d4fae7c6b52ff4b62416d06ff1c38f890dd67822b2590"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-05.png",
+      "size": 192039,
+      "sha256": "786ef35d25245aa1c99cbeddabf52dcb09cc4edec4f41550e798dca5306e6cfe"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-06.png",
+      "size": 195861,
+      "sha256": "182c687a7dfc45e3dc9ae37dcdb76c116806f8719cbf1882fd3067ab8f203688"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-07.png",
+      "size": 191893,
+      "sha256": "2a3f0e3de4960e087fadb43d7e97b37c82fcbe871c62c4a1b691503344cc743c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-08.png",
+      "size": 197349,
+      "sha256": "4f0dbd6783033c3d37cff23f407a0308083af5756da8d7bfef9f6f9f46e58214"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-09.png",
+      "size": 201416,
+      "sha256": "4a221aef60ead4ac7224a29463297fcdc14d72452070c8e6d884331df07422c3"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-10.png",
+      "size": 203849,
+      "sha256": "c540ba7880637bc97958048674349e84853561a3d2bb705c3bd0ddcdeb3d17e1"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-11.png",
+      "size": 203106,
+      "sha256": "95bd06e1aab0f23bb54ab891d98228ae841e92f9a81f6168ed7949e65901a064"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-12.png",
+      "size": 198000,
+      "sha256": "ffd0f930869a904a6177ae03b07ca94b268aec707a699773fff04d7e225c6f9b"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-13.png",
+      "size": 201519,
+      "sha256": "a9662a3d0b9655b335f7e084a28478fcb7e0969af4f54a96f64f21c8e37b3b8d"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-14.png",
+      "size": 212918,
+      "sha256": "4e7e831fdc6c7743ab166265655edf1c09bc9412f19c340fb256c842451c3148"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-15.png",
+      "size": 204880,
+      "sha256": "75c567e574adb9afb47ea7a29b944a9a2b2a094a6374febbf16dcf398c792c1f"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-16.png",
+      "size": 201705,
+      "sha256": "636b4da3302047f41247b78b111857966d44408cacc663c885a414dc5565356c"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-17.png",
+      "size": 208551,
+      "sha256": "39329c485129485f0244ab036bf0136757f30c3149b749c31f21a43ff5ad06cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-18.png",
+      "size": 209653,
+      "sha256": "c32bdba1567988e43da6a359d36864261b86b6d3fdbc70f02aa06f63a5862dbf"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-19.png",
+      "size": 211749,
+      "sha256": "74fa564a5ab187639f40e300aecff5c46e2bd67bb2899178c2f93a16a009c4cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-20.png",
+      "size": 299119,
+      "sha256": "137cb248cba2d79ea54fa78bcec46f8023ac8bde194038c7dd910d6a72e6ce85"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\13\\page-21.png",
+      "size": 189818,
+      "sha256": "9e13ecbf0f92f6e0d2513c65471d84453db477d0a17f048d3e1e4472537e9e14"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\build_validation.json",
+      "size": 1391,
+      "sha256": "9163516fc3497db0235e1e67996b24327c763fa8485cc8fc91970d5d8ab9c912"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\_qa\\document_checks.json",
+      "size": 113,
+      "sha256": "7d0e7c3bab530768dc5e3191c04a80b2821730422c19e6b7c2157d318595ebc0"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\acceptance_cases.json",
+      "size": 14264,
+      "sha256": "ee74c5241d11e57345badc88a45a4f93891ed4ed6db7b404d2a1c8dee50b0b11"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\acceptance_record_template.json",
+      "size": 1645,
+      "sha256": "8274b55265b466428a0cee414fd43edd1206aa078e3fda41f8cec2765b2fffef"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\README.md",
+      "size": 2477,
+      "sha256": "7acfc3ff2cf41c005da03faed69bde3a772c6b9efb140b9f00a712146b0980cc"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\requirements.json",
+      "size": 7215,
+      "sha256": "0053f6e61557ae835a4373de84bfbdb732a15b2477554b398dec4ad94f9d0407"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\tools\\build_documents.py",
+      "size": 23708,
+      "sha256": "3ed1c8b67d28927e09dcc0444fcfb8c3c808dd4b964b5dc40e8274fa05464e64"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\tools\\build_opt_plan.py",
+      "size": 10712,
+      "sha256": "28a9b2ebd7ddd6ee6d074a8be87896c30070d250019f6e4d8bac7d5dfb0f17c2"
+    },
+    {
+      "path": "docs\\reliable_design_v1\\traceability.csv",
+      "size": 3016,
+      "sha256": "a044714247c1fddee065cddf74b3733364f4322b5f1004b21c69f5d39d0f8b2e"
+    },
+    {
+      "path": "mcp\\.pytest_cache\\.gitignore",
+      "size": 37,
+      "sha256": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd"
+    },
+    {
+      "path": "mcp\\.pytest_cache\\CACHEDIR.TAG",
+      "size": 191,
+      "sha256": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4"
+    },
+    {
+      "path": "mcp\\.pytest_cache\\README.md",
+      "size": 302,
+      "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+    },
+    {
+      "path": "mcp\\.pytest_cache\\v\\cache\\nodeids",
+      "size": 2284,
+      "sha256": "3f07727f6cf01d0caa843bc90df7b82a61ccbcc85e51503cbf03fcf6e36ef827"
+    },
+    {
+      "path": "mcp\\install_mcp.py",
+      "size": 53259,
+      "sha256": "449731eed8a4e7f747d4407f4d7867e3b2845d5964adf45612898a03b02cb9c2"
+    },
+    {
+      "path": "mcp\\MCP-安装教程.md",
+      "size": 18580,
+      "sha256": "922692c2fad6dbdd39102125925245cc062fa3981e4b5adad5267cd39162d116"
+    },
+    {
+      "path": "mcp\\openvsp_mcp_server.py",
+      "size": 135074,
+      "sha256": "00e3170a93938bdc86a913406264b92362f8ae1e9773be185cd7d1258fdb0530"
+    },
+    {
+      "path": "mcp\\pyproject.toml",
+      "size": 1045,
+      "sha256": "aaaa5f11091342b8d546bc6fc2d9403f3a5506ec9480dda04f77b073ed7edaf1"
+    },
+    {
+      "path": "mcp\\README.md",
+      "size": 19608,
+      "sha256": "fc6cecc47cdc81d7a6af63fb39507460c1e75c58f938ae742b9ad2e662422433"
+    },
+    {
+      "path": "mcp\\STATUS.md",
+      "size": 23139,
+      "sha256": "4a4aecdf240eceab3fbf5790d72b6d9c616143b118926876d6f43687f84f935c"
+    },
+    {
+      "path": "mcp\\tests\\test_install_mcp.py",
+      "size": 19424,
+      "sha256": "a0de4ea2b355713351cf9c52f9ab251e288ffc246cf20164a0e557e24fe25759"
+    },
+    {
+      "path": "mcp\\tests\\test_stdio.py",
+      "size": 27160,
+      "sha256": "84694eef7acb87eb003675f0a0a6c16f0cf56a4eef26eafa4ea251e05073adf6"
+    },
+    {
+      "path": "scripts\\freeze_reliable_baseline.py",
+      "size": 2037,
+      "sha256": "8fce2a911e66fa28d22dc0c68be5e6d84a47200b51e97948a8f3d26e016eea4b"
+    },
+    {
+      "path": "scripts\\import_profili.ps1",
+      "size": 3726,
+      "sha256": "49368099b640f015474dc1023a01ee73442735c55de59fb061f07dcfb3c6a1b6"
+    },
+    {
+      "path": "scripts\\package_r2.py",
+      "size": 12294,
+      "sha256": "9128a374b1f1b14985f145aec6c9193be4109c9b1d01e2d1f031d36e3f09f123"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+requirement_id,title,milestone,owner,acceptance_cases,execution_status
+REQ-001,结构化需求与显式输入保留,M1,Requirements,AT-001,NOT_RUN
+REQ-002,单位数值符号与边界归一化,M1,Requirements,AT-002 AT-003,NOT_RUN
+REQ-003,缺失信息冲突与不可行输入处理,M1,Requirements,AT-004 AT-005,NOT_RUN
+REQ-004,指定翼型载荷与锁定约束执行,M1,Requirements,AT-006 AT-007,NOT_RUN
+REQ-005,经验公式来源适用域与规则版本,M2,Engineering,AT-028,NOT_RUN
+REQ-006,几何恒等关系与实际模型读回,M1,Geometry,AT-008 AT-009,NOT_RUN
+REQ-007,操纵面有效性与左右混控,M1,Geometry,AT-010 AT-011,NOT_RUN
+REQ-008,鸭翼与布局专用参数闭环,M2,Geometry,AT-029,NOT_RUN
+REQ-009,坐标符号导数归一化与参考点统一,M1,Engineering,AT-012 AT-013,NOT_RUN
+REQ-010,候选运行工况及证据完整标识,M1,Runtime,AT-014,NOT_RUN
+REQ-011,求解失败新鲜度数值域与输出校验,M1,Runtime,AT-015 AT-016,NOT_RUN
+REQ-012,版本失效传播与缓存隔离,M1,Runtime,AT-017 AT-018,NOT_RUN
+REQ-013,极曲线有效域及外推控制,M1,Aero,AT-019,NOT_RUN
+REQ-014,窗口最大升力与可信失速证据区分,M1,Aero,AT-020,NOT_RUN
+REQ-015,质量重心惯量及装载包线,M2,Mass,AT-030 AT-031,NOT_RUN
+REQ-016,受限实际工况配平,M2,Trim,AT-032 AT-033,NOT_RUN
+REQ-017,静稳定与中性点一致性,M2,Stability,AT-034,NOT_RUN
+REQ-018,配平点动力学与模态计算,M2,Dynamics,AT-035 AT-036,NOT_RUN
+REQ-019,真实舵效限位与响应校核,M2,Controls,AT-037,NOT_RUN
+REQ-020,完整阻力与推进功率可用性,M2,Performance,AT-038,NOT_RUN
+REQ-021,任务能量航程航时与爬升闭合,M2,Performance,AT-039,NOT_RUN
+REQ-022,多工况和重心包线覆盖,M2,Engineering,AT-040,NOT_RUN
+REQ-023,硬约束三态与证据门禁,M1,Criteria,AT-021 AT-022,NOT_RUN
+REQ-024,大模型结构化调用与计算权限隔离,M3,Agent,AT-041 AT-042 AT-043,NOT_RUN
+REQ-025,预算终止取消与可恢复状态,M3,Agent,AT-044 AT-045,NOT_RUN
+REQ-026,离线网络门禁与敏感数据保护,M1,Security,AT-023 AT-024,NOT_RUN
+REQ-027,附件不可信输入与路径边界,M3,Security,AT-046 AT-047,NOT_RUN
+REQ-028,可行性优先优化与目标真实性,M3,Optimizer,AT-048 AT-049,NOT_RUN
+REQ-029,同条件跨布局比较,M3,Optimizer,AT-050 AT-051,NOT_RUN
+REQ-030,最终候选独立复算,M3,Runtime,AT-052,NOT_RUN
+REQ-031,报告逐项符合性与证据追踪,M1,Reporting,AT-025 AT-026,NOT_RUN
+REQ-032,配置结果兼容与版本迁移,M1,Integration,AT-027,NOT_RUN
+REQ-033,GUI 需求确认状态与旧报告防误用,M3,GUI,AT-053,NOT_RUN
+REQ-034,MCP 与 CLI 共用判定语义,M3,Integration,AT-054,NOT_RUN
+REQ-035,可重建包依赖清单与隔离回归,M4,Release,AT-055 AT-056,NOT_RUN
+REQ-036,独立基准收敛与验证精度,M4,Validation,AT-057 AT-058,NOT_RUN
+REQ-037,不确定性敏感性与稳健可行性,M4,Validation,AT-059 AT-060,NOT_RUN
+REQ-038,验收记录缺陷关闭与发布批准,M4,QA,AT-061 AT-062,NOT_RUN

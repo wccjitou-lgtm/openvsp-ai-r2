@@ -1,0 +1,40 @@
+# Build outputs and generated data
+dist/
+build/
+out/
+ai/outputs/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
+*.pyo
+*.log
+*.tmp
+
+# Local secrets/config
+ai_ui.cfg
+**/ai_ui.cfg
+*.key
+*.pem
+.env
+.env.*
+
+# Generated validation/runtime artifacts
+validation/**/runs/
+validation/**/figures/
+validation/pdf_pages/
+validation/opt_plan_pages/
+ui-tests/
+docs/**/_qa/
+
+# Large generated model/output files (keep small examples only)
+*.stl
+*.vspgeom
+*.polar
+*.stab
+*.flt
+*.adb
+*.csf
+*.history
+*.lod
+*.tag
+*.taglist

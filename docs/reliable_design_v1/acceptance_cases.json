@@ -1,0 +1,627 @@
+{
+  "document_set_id": "OVSP-RD-20261102",
+  "version": "1.0",
+  "execution_status": "NOT_RUN",
+  "cases": [
+    {
+      "id": "AT-001",
+      "title": "失速需求独立保留",
+      "requirements": [
+        "REQ-001"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-002",
+      "title": "海平面与速度单位归一化",
+      "requirements": [
+        "REQ-002"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-003",
+      "title": "有符号角度和边界值",
+      "requirements": [
+        "REQ-002"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-004",
+      "title": "缺失信息不伪装完整",
+      "requirements": [
+        "REQ-003"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-005",
+      "title": "显式约束冲突可解释拒绝",
+      "requirements": [
+        "REQ-003"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-006",
+      "title": "显式翼型与锁定有效",
+      "requirements": [
+        "REQ-004"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-007",
+      "title": "显式载荷进入质量闭环",
+      "requirements": [
+        "REQ-004"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-008",
+      "title": "几何恒等关系不靠截断修饰",
+      "requirements": [
+        "REQ-006"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-009",
+      "title": "模型写入后读回核验",
+      "requirements": [
+        "REQ-006"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-010",
+      "title": "飞翼退化控制面被拦截",
+      "requirements": [
+        "REQ-007"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-011",
+      "title": "飞翼同相与差动混控",
+      "requirements": [
+        "REQ-007"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-012",
+      "title": "坐标与导数单位统一",
+      "requirements": [
+        "REQ-009"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-013",
+      "title": "重心与参考量不得混用",
+      "requirements": [
+        "REQ-009"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-014",
+      "title": "运行与工况标识完整",
+      "requirements": [
+        "REQ-010"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-015",
+      "title": "非零退出与陈旧文件不可复用",
+      "requirements": [
+        "REQ-011"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-016",
+      "title": "数值异常与不完整输出",
+      "requirements": [
+        "REQ-011"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-017",
+      "title": "上游变化使下游失效",
+      "requirements": [
+        "REQ-012"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-018",
+      "title": "缓存键覆盖计算语义",
+      "requirements": [
+        "REQ-012"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-019",
+      "title": "超出极曲线范围不夹端点",
+      "requirements": [
+        "REQ-013"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-020",
+      "title": "窗口峰值不冒充失速",
+      "requirements": [
+        "REQ-014"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-021",
+      "title": "硬约束三态真值表",
+      "requirements": [
+        "REQ-023"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-022",
+      "title": "缺工程证据不以流程成功放行",
+      "requirements": [
+        "REQ-023"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-023",
+      "title": "离线 GA 的网络边界",
+      "requirements": [
+        "REQ-026"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-024",
+      "title": "敏感数据外发与日志脱敏",
+      "requirements": [
+        "REQ-026"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-025",
+      "title": "报告逐项符合性与证据链",
+      "requirements": [
+        "REQ-031"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-026",
+      "title": "报告结构与逐页排版",
+      "requirements": [
+        "REQ-031"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P2"
+    },
+    {
+      "id": "AT-027",
+      "title": "旧配置与结果迁移",
+      "requirements": [
+        "REQ-032"
+      ],
+      "milestone": "M1",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-028",
+      "title": "经验规则来源与适用域",
+      "requirements": [
+        "REQ-005"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-029",
+      "title": "鸭翼参数工具闭环",
+      "requirements": [
+        "REQ-008"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-030",
+      "title": "质量与实际重心解析金样",
+      "requirements": [
+        "REQ-015"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-031",
+      "title": "惯量与装载包线",
+      "requirements": [
+        "REQ-015"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-032",
+      "title": "实际工况联合配平",
+      "requirements": [
+        "REQ-016"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-033",
+      "title": "无受限配平解不放行",
+      "requirements": [
+        "REQ-016"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-034",
+      "title": "中性点与静稳定一致性",
+      "requirements": [
+        "REQ-017"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-035",
+      "title": "配平点动力学矩阵",
+      "requirements": [
+        "REQ-018"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-036",
+      "title": "模态特征值与识别",
+      "requirements": [
+        "REQ-018"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-037",
+      "title": "实际舵效限位与响应",
+      "requirements": [
+        "REQ-019"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-038",
+      "title": "阻力构成与可用功率",
+      "requirements": [
+        "REQ-020"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-039",
+      "title": "任务能量与质量闭合",
+      "requirements": [
+        "REQ-021"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-040",
+      "title": "多工况与重心包线",
+      "requirements": [
+        "REQ-022"
+      ],
+      "milestone": "M2",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-041",
+      "title": "大模型脚本化回放",
+      "requirements": [
+        "REQ-024"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-042",
+      "title": "非法工具与指标伪造",
+      "requirements": [
+        "REQ-024"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-043",
+      "title": "重复调用与无进展循环",
+      "requirements": [
+        "REQ-024"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-044",
+      "title": "预算终止与局部无解语义",
+      "requirements": [
+        "REQ-025"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-045",
+      "title": "取消传播与可恢复状态",
+      "requirements": [
+        "REQ-025"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-046",
+      "title": "附件注入不是系统指令",
+      "requirements": [
+        "REQ-027"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-047",
+      "title": "路径穿越与附件边界",
+      "requirements": [
+        "REQ-027"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-048",
+      "title": "GA 可行性优先排序",
+      "requirements": [
+        "REQ-028"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-049",
+      "title": "优化目标计算真实",
+      "requirements": [
+        "REQ-028"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-050",
+      "title": "跨布局同条件公平比较",
+      "requirements": [
+        "REQ-029"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-051",
+      "title": "三布局未知项不强制全通过",
+      "requirements": [
+        "REQ-029"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-052",
+      "title": "最终候选独立复算",
+      "requirements": [
+        "REQ-030"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-053",
+      "title": "GUI 确认状态与旧报告",
+      "requirements": [
+        "REQ-033"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-054",
+      "title": "GUI MCP CLI 判定一致",
+      "requirements": [
+        "REQ-034"
+      ],
+      "milestone": "M3",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-055",
+      "title": "干净环境可重建包",
+      "requirements": [
+        "REQ-035"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-056",
+      "title": "隔离回归不覆盖旧输出",
+      "requirements": [
+        "REQ-035"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-057",
+      "title": "独立工程基准准确性",
+      "requirements": [
+        "REQ-036"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-058",
+      "title": "网格与数值收敛",
+      "requirements": [
+        "REQ-036"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-059",
+      "title": "不确定性与敏感性传播",
+      "requirements": [
+        "REQ-037"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-060",
+      "title": "名义可行与稳健可行分离",
+      "requirements": [
+        "REQ-037"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    },
+    {
+      "id": "AT-061",
+      "title": "缺陷关闭与阶段门禁",
+      "requirements": [
+        "REQ-038"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P0"
+    },
+    {
+      "id": "AT-062",
+      "title": "发布签署与证据冻结",
+      "requirements": [
+        "REQ-038"
+      ],
+      "milestone": "M4",
+      "execution_status": "NOT_RUN",
+      "priority": "P1"
+    }
+  ]
+}

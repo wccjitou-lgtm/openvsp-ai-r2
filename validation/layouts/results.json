@@ -1,0 +1,198 @@
+{
+  "conventional": {
+    "ok": true,
+    "configuration": "conventional",
+    "area_m2": 1.3325,
+    "span_m": 3.463,
+    "clmax": 0.779009473931,
+    "ld_max": 21.224742835708952,
+    "static_margin": 0.1,
+    "criteria": "pass",
+    "criteria_summary": {
+      "pass": 25,
+      "warn": 0,
+      "fail": 0,
+      "total": 25
+    },
+    "iterations": [
+      {
+        "round": 0,
+        "overall": "warn",
+        "summary": {
+          "pass": 24,
+          "warn": 1,
+          "fail": 0,
+          "total": 25
+        },
+        "area_m2": 0.7804,
+        "span_m": 2.6502
+      },
+      {
+        "round": 1,
+        "overall": "pass",
+        "summary": {
+          "pass": 25,
+          "warn": 0,
+          "fail": 0,
+          "total": 25
+        },
+        "area_m2": 1.3325,
+        "span_m": 3.463
+      }
+    ],
+    "report_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\conventional\\design_report_20261101_234331.docx",
+    "model_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\conventional\\design_model.vsp3",
+    "exports": {
+      "vsp3": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\conventional\\design_model.vsp3",
+      "stl": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\conventional\\design_model.stl"
+    },
+    "elapsed_s": 10.3
+  },
+  "flying_wing": {
+    "ok": true,
+    "configuration": "flying_wing",
+    "area_m2": 1.0736,
+    "span_m": 2.7414,
+    "clmax": 0.885661798519,
+    "ld_max": 25.80416474088957,
+    "static_margin": 0.1,
+    "criteria": "warn",
+    "criteria_summary": {
+      "pass": 15,
+      "warn": 3,
+      "fail": 0,
+      "total": 19
+    },
+    "iterations": [
+      {
+        "round": 0,
+        "overall": "warn",
+        "summary": {
+          "pass": 14,
+          "warn": 4,
+          "fail": 0,
+          "total": 19
+        },
+        "area_m2": 0.7804,
+        "span_m": 2.3372
+      },
+      {
+        "round": 1,
+        "overall": "warn",
+        "summary": {
+          "pass": 15,
+          "warn": 3,
+          "fail": 0,
+          "total": 19
+        },
+        "area_m2": 1.0736,
+        "span_m": 2.7414
+      }
+    ],
+    "report_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\flying_wing\\design_report_20261101_234335.docx",
+    "model_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\flying_wing\\design_model.vsp3",
+    "exports": {
+      "vsp3": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\flying_wing\\design_model.vsp3",
+      "stl": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\flying_wing\\design_model.stl"
+    },
+    "elapsed_s": 3.3
+  },
+  "canard": {
+    "ok": true,
+    "configuration": "canard",
+    "area_m2": 1.2293,
+    "span_m": 3.136,
+    "clmax": 0.705760130253,
+    "ld_max": 19.938510486485658,
+    "static_margin": 0.1,
+    "criteria": "warn",
+    "criteria_summary": {
+      "pass": 18,
+      "warn": 2,
+      "fail": 0,
+      "total": 22
+    },
+    "iterations": [
+      {
+        "round": 0,
+        "overall": "warn",
+        "summary": {
+          "pass": 18,
+          "warn": 2,
+          "fail": 0,
+          "total": 22
+        },
+        "area_m2": 0.7804,
+        "span_m": 2.4986
+      },
+      {
+        "round": 1,
+        "overall": "warn",
+        "summary": {
+          "pass": 18,
+          "warn": 2,
+          "fail": 0,
+          "total": 22
+        },
+        "area_m2": 1.2293,
+        "span_m": 3.136
+      }
+    ],
+    "report_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\canard\\design_report_20261101_234343.docx",
+    "model_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\canard\\design_model.vsp3",
+    "exports": {
+      "vsp3": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\canard\\design_model.vsp3",
+      "stl": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\canard\\design_model.stl"
+    },
+    "elapsed_s": 8.1
+  },
+  "tandem": {
+    "ok": true,
+    "configuration": "tandem",
+    "area_m2": 0.9996,
+    "span_m": 2.8278,
+    "clmax": 0.984586676746,
+    "ld_max": 16.31208124953555,
+    "static_margin": 0.1,
+    "criteria": "warn",
+    "criteria_summary": {
+      "pass": 21,
+      "warn": 1,
+      "fail": 0,
+      "total": 22
+    },
+    "iterations": [
+      {
+        "round": 0,
+        "overall": "warn",
+        "summary": {
+          "pass": 20,
+          "warn": 2,
+          "fail": 0,
+          "total": 22
+        },
+        "area_m2": 0.7804,
+        "span_m": 2.4986
+      },
+      {
+        "round": 1,
+        "overall": "warn",
+        "summary": {
+          "pass": 21,
+          "warn": 1,
+          "fail": 0,
+          "total": 22
+        },
+        "area_m2": 0.9996,
+        "span_m": 2.8278
+      }
+    ],
+    "report_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\tandem\\design_report_20261101_234352.docx",
+    "model_path": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\tandem\\design_model.vsp3",
+    "exports": {
+      "vsp3": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\tandem\\design_model.vsp3",
+      "stl": "D:\\Zcoding\\OpenVSP-R2\\validation\\layouts\\tandem\\design_model.stl"
+    },
+    "elapsed_s": 9.1
+  }
+}

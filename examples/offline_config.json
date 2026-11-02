@@ -1,0 +1,13 @@
+{
+  "provider": "deepseek",
+  "base_url": "https://api.deepseek.com",
+  "api_key": "",
+  "api_key_env": "OPENVSP_AI_API_KEY",
+  "model": "deepseek-flash",
+  "prompt": "设计一架最大起飞重量 50 kg、飞行高度 1000 m、巡航速度 25 m/s 的大展弦比固定翼无人机，采用 V 尾和电动机，生成 OpenVSP 模型并完成气动计算与设计报告。",
+  "output_dir": "examples/offline_run",
+  "report_template": "ai/templates/design_report_template.docx",
+  "mode": "offline",
+  "max_iterations": 2,
+  "ui": "test"
+}

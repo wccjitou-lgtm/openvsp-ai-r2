@@ -1,0 +1,65 @@
+{
+  "template_version": "1.0",
+  "document_set_id": "OVSP-RD-20261102",
+  "record_id": null,
+  "case_id": null,
+  "case_version": "1.0",
+  "requirement_ids": [],
+  "milestone": null,
+  "execution_status": "NOT_RUN",
+  "executor": null,
+  "reviewer": null,
+  "started_at": null,
+  "finished_at": null,
+  "timezone": "Asia/Shanghai",
+  "application": {
+    "source_version": null,
+    "source_manifest_sha256": null,
+    "local_changes": null,
+    "package_sha256": null
+  },
+  "environment": {
+    "os": null,
+    "python_executable": null,
+    "python_version": null,
+    "openvsp_version": null,
+    "vspaero_sha256": null,
+    "dependency_manifest_sha256": null
+  },
+  "profiles": {
+    "numerical": {"id": "NUM_V1", "approval_ref": null},
+    "engineering": {"id": "ENG_V1", "approval_ref": null},
+    "validation": {"id": "VAL_V1", "approval_ref": null}
+  },
+  "inputs": {
+    "requirements_snapshot": null,
+    "input_fingerprint": null,
+    "fixture_sha256": null,
+    "candidate_id": null,
+    "candidate_revision": null,
+    "operating_point_id": null,
+    "run_id": null,
+    "reference_definition": null,
+    "random_seed": null
+  },
+  "execution": {
+    "actual_entrypoint": null,
+    "arguments_redacted": [],
+    "steps": [],
+    "fault_injection": null,
+    "returncode": null
+  },
+  "assertions": [],
+  "engineering_result": {
+    "task_status": null,
+    "feasibility_status": null,
+    "evidence_status": null,
+    "recommendation_status": null
+  },
+  "evidence": [],
+  "defects": [],
+  "blocking_reason": null,
+  "unverified_items": [],
+  "residual_risks": [],
+  "signoff": {"reviewer": null, "date": null, "decision": null}
+}

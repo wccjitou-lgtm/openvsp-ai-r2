@@ -1,0 +1,79 @@
+{
+  "document_set_id": "OVSP-RD-20261102",
+  "version": "1.0",
+  "date": "2026-11-02",
+  "status": "proposed_for_review",
+  "scope": "Reliable concept design within approved operating and evidence domains; not flight release or certification.",
+  "development_document": "12-可靠设计软件改造开发方案.md",
+  "acceptance_document": "13-可靠设计软件验收测试规范.md",
+  "default_test_status": "NOT_RUN",
+  "milestones": [
+    {"id": "M0", "name": "基线与契约冻结"},
+    {"id": "M1", "name": "结果可信与缺陷回归"},
+    {"id": "M2", "name": "工程计算闭环"},
+    {"id": "M3", "name": "大模型约束迭代与布局比较"},
+    {"id": "M4", "name": "独立验证与限定范围发布"}
+  ],
+  "requirements": [
+    {"id": "REQ-001", "title": "结构化需求与显式输入保留", "milestone": "M1", "owner": "Requirements", "verification": "unit_integration"},
+    {"id": "REQ-002", "title": "单位数值符号与边界归一化", "milestone": "M1", "owner": "Requirements", "verification": "unit_property"},
+    {"id": "REQ-003", "title": "缺失信息冲突与不可行输入处理", "milestone": "M1", "owner": "Requirements", "verification": "negative_integration"},
+    {"id": "REQ-004", "title": "指定翼型载荷与锁定约束执行", "milestone": "M1", "owner": "Requirements", "verification": "integration"},
+    {"id": "REQ-005", "title": "经验公式来源适用域与规则版本", "milestone": "M2", "owner": "Engineering", "verification": "review_unit"},
+    {"id": "REQ-006", "title": "几何恒等关系与实际模型读回", "milestone": "M1", "owner": "Geometry", "verification": "real_openvsp"},
+    {"id": "REQ-007", "title": "操纵面有效性与左右混控", "milestone": "M1", "owner": "Geometry", "verification": "real_openvsp"},
+    {"id": "REQ-008", "title": "鸭翼与布局专用参数闭环", "milestone": "M2", "owner": "Geometry", "verification": "real_integration"},
+    {"id": "REQ-009", "title": "坐标符号导数归一化与参考点统一", "milestone": "M1", "owner": "Engineering", "verification": "unit_real_solver"},
+    {"id": "REQ-010", "title": "候选运行工况及证据完整标识", "milestone": "M1", "owner": "Runtime", "verification": "integration"},
+    {"id": "REQ-011", "title": "求解失败新鲜度数值域与输出校验", "milestone": "M1", "owner": "Runtime", "verification": "fault_injection"},
+    {"id": "REQ-012", "title": "版本失效传播与缓存隔离", "milestone": "M1", "owner": "Runtime", "verification": "integration"},
+    {"id": "REQ-013", "title": "极曲线有效域及外推控制", "milestone": "M1", "owner": "Aero", "verification": "unit_real_solver"},
+    {"id": "REQ-014", "title": "窗口最大升力与可信失速证据区分", "milestone": "M1", "owner": "Aero", "verification": "metamorphic"},
+    {"id": "REQ-015", "title": "质量重心惯量及装载包线", "milestone": "M2", "owner": "Mass", "verification": "analytic_benchmark"},
+    {"id": "REQ-016", "title": "受限实际工况配平", "milestone": "M2", "owner": "Trim", "verification": "analytic_real_solver"},
+    {"id": "REQ-017", "title": "静稳定与中性点一致性", "milestone": "M2", "owner": "Stability", "verification": "benchmark"},
+    {"id": "REQ-018", "title": "配平点动力学与模态计算", "milestone": "M2", "owner": "Dynamics", "verification": "independent_benchmark"},
+    {"id": "REQ-019", "title": "真实舵效限位与响应校核", "milestone": "M2", "owner": "Controls", "verification": "benchmark_real_solver"},
+    {"id": "REQ-020", "title": "完整阻力与推进功率可用性", "milestone": "M2", "owner": "Performance", "verification": "analytic_benchmark"},
+    {"id": "REQ-021", "title": "任务能量航程航时与爬升闭合", "milestone": "M2", "owner": "Performance", "verification": "analytic_benchmark"},
+    {"id": "REQ-022", "title": "多工况和重心包线覆盖", "milestone": "M2", "owner": "Engineering", "verification": "integration"},
+    {"id": "REQ-023", "title": "硬约束三态与证据门禁", "milestone": "M1", "owner": "Criteria", "verification": "truth_table"},
+    {"id": "REQ-024", "title": "大模型结构化调用与计算权限隔离", "milestone": "M3", "owner": "Agent", "verification": "scripted_provider"},
+    {"id": "REQ-025", "title": "预算终止取消与可恢复状态", "milestone": "M3", "owner": "Agent", "verification": "fault_injection"},
+    {"id": "REQ-026", "title": "离线网络门禁与敏感数据保护", "milestone": "M1", "owner": "Security", "verification": "network_boundary"},
+    {"id": "REQ-027", "title": "附件不可信输入与路径边界", "milestone": "M3", "owner": "Security", "verification": "negative_security"},
+    {"id": "REQ-028", "title": "可行性优先优化与目标真实性", "milestone": "M3", "owner": "Optimizer", "verification": "unit_integration"},
+    {"id": "REQ-029", "title": "同条件跨布局比较", "milestone": "M3", "owner": "Optimizer", "verification": "three_layout_integration"},
+    {"id": "REQ-030", "title": "最终候选独立复算", "milestone": "M3", "owner": "Runtime", "verification": "fresh_process"},
+    {"id": "REQ-031", "title": "报告逐项符合性与证据追踪", "milestone": "M1", "owner": "Reporting", "verification": "structural_visual"},
+    {"id": "REQ-032", "title": "配置结果兼容与版本迁移", "milestone": "M1", "owner": "Integration", "verification": "contract"},
+    {"id": "REQ-033", "title": "GUI 需求确认状态与旧报告防误用", "milestone": "M3", "owner": "GUI", "verification": "ui_workflow"},
+    {"id": "REQ-034", "title": "MCP 与 CLI 共用判定语义", "milestone": "M3", "owner": "Integration", "verification": "contract_e2e"},
+    {"id": "REQ-035", "title": "可重建包依赖清单与隔离回归", "milestone": "M4", "owner": "Release", "verification": "clean_environment"},
+    {"id": "REQ-036", "title": "独立基准收敛与验证精度", "milestone": "M4", "owner": "Validation", "verification": "independent_dataset"},
+    {"id": "REQ-037", "title": "不确定性敏感性与稳健可行性", "milestone": "M4", "owner": "Validation", "verification": "bounded_uncertainty"},
+    {"id": "REQ-038", "title": "验收记录缺陷关闭与发布批准", "milestone": "M4", "owner": "QA", "verification": "review_signoff"}
+  ],
+  "profiles": {
+    "NUM_V1": {
+      "classification": "proposed_software_numerical_tolerances_not_airworthiness_limits",
+      "unit_abs": 1e-9,
+      "mass_balance_abs_kg": 1e-6,
+      "mass_balance_rel": 1e-8,
+      "geometry_abs_m": 1e-5,
+      "geometry_rel": 1e-3,
+      "trim_force_normalized": 0.005,
+      "trim_moment_coefficient": 0.001,
+      "eigenvalue_abs": 1e-8,
+      "eigenvalue_rel": 1e-6
+    },
+    "ENG_V1": {
+      "status": "requires_engineering_owner_approval",
+      "rule": "No universal static-margin, modal, control, stall or energy-reserve threshold is assumed. All mandatory fields must be approved before qualified release."
+    },
+    "VAL_V1": {
+      "status": "requires_independent_baselines",
+      "rule": "Reference data, applicability, metric errors and tolerances must be frozen before examining candidate outputs."
+    }
+  }
+}
