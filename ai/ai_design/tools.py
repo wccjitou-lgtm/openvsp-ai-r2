@@ -342,6 +342,7 @@ class ToolExecutor:
             "vtail": geometry.get("vtail"),
             "htail": geometry.get("htail"),
             "vtail_conventional": geometry.get("vtail_conventional"),
+            "vtail_right": geometry.get("vtail_right"),
             "control_surfaces": geometry.get("control_surfaces"),
             "sizing": geometry.get("sizing"),
         }
@@ -441,6 +442,7 @@ class ToolExecutor:
             "vtail": geo.get("vtail"),
             "htail": geo.get("htail"),
             "vtail_conventional": geo.get("vtail_conventional"),
+            "vtail_right": geo.get("vtail_right"),
             "sizing": geo.get("sizing"),
             "control_surfaces": geo.get("control_surfaces"),
             "geometry": _compact_geometry(geo),
