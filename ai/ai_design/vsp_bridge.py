@@ -599,7 +599,8 @@ class VSPBridge:
     def _add_vertical_fin(self, name: str, span_m: float, root_chord_m: float,
                           tip_chord_m: float, sweep_deg: float = 30.0,
                           x_le_m: float = 0.0, z_m: float = 0.0,
-                          airfoil: str = "NACA0012") -> Component:
+                          airfoil: str = "NACA0012",
+                          y_offset_m: float = 0.0) -> Component:
         vsp = self.vsp
         vid = vsp.AddGeom("WING", "")
         vsp.SetGeomName(vid, name)
@@ -617,7 +618,7 @@ class VSPBridge:
         vsp.Update()
         self._sp(vid, "Sym_Planar_Flag", "Sym", 0)
         self._sp(vid, "X_Location", "XForm", float(x_le_m) * M_TO_FT)
-        self._sp(vid, "Y_Location", "XForm", 0.0)
+        self._sp(vid, "Y_Location", "XForm", float(y_offset_m) * M_TO_FT)
         self._sp(vid, "Z_Location", "XForm", float(z_m) * M_TO_FT)
         self._sp(vid, "X_Rotation", "XForm", 90.0)
         vsp.Update()
@@ -632,6 +633,7 @@ class VSPBridge:
             "sweep_deg": float(sweep_deg),
             "x_le_m": float(x_le_m),
             "z_m": float(z_m),
+            "y_offset_m": float(y_offset_m),
             "airfoil": airfoil,
             "symmetry": False,
         }
@@ -1484,7 +1486,7 @@ class VSPBridge:
                         "dihedral_deg","twist_deg","x_le_m","z_m","airfoil"},
               "vtail": {"panel_span_m","root_chord_m","tip_chord_m","dihedral_deg",
                          "sweep_deg","x_le_m","z_m","airfoil"},
-              "htail"/"vtail_conventional": {...},
+              "htail"/"vtail_conventional"/"vtail_right": {...},
               "control_surfaces": [{"component","name","u_start",...}]
             }
         """
@@ -1610,6 +1612,20 @@ class VSPBridge:
                 x_le_m=float(vtail_conv.get("x_le_m", 0.0)),
                 z_m=float(vtail_conv.get("z_m", 0.0)),
                 airfoil=str(vtail_conv.get("airfoil", "NACA0012")),
+                y_offset_m=float(vtail_conv.get("y_offset_m", 0.0)),
+            )
+        vtail_right = geometry.get("vtail_right")
+        if vtail_right:
+            self._add_vertical_fin(
+                name=str(vtail_right.get("name", "VTailR")),
+                span_m=float(vtail_right["span_m"]),
+                root_chord_m=float(vtail_right["root_chord_m"]),
+                tip_chord_m=float(vtail_right["tip_chord_m"]),
+                sweep_deg=float(vtail_right.get("sweep_deg", 30.0)),
+                x_le_m=float(vtail_right.get("x_le_m", 0.0)),
+                z_m=float(vtail_right.get("z_m", 0.0)),
+                airfoil=str(vtail_right.get("airfoil", "NACA0012")),
+                y_offset_m=float(vtail_right.get("y_offset_m", 0.0)),
             )
         for item in geometry.get("control_surfaces", []) or []:
             try:
