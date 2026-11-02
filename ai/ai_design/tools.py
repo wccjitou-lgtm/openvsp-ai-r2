@@ -222,6 +222,29 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "openvsp_list_design_rules",
+            "description": "列出内置气动公式与设计经验规则（仅作辅助，不是硬性规则）。"
+                           "可按 category/level 查询，用于选择估算方法、检查适用域和权衡参数。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "enum": ["mission", "wing", "drag", "tail", "stability",
+                                 "performance", "mass", "aeroelastic", "uncertainty"],
+                        "description": "规则类别；省略返回全部",
+                    },
+                    "level": {"type": "string", "enum": ["P0", "P1", "P2"],
+                              "description": "优先级筛选"},
+                    "query": {"type": "string", "description": "名称/公式关键词"},
+                },
+                "additionalProperties": False,
+            },
+        },
+    },
 ]
 
 TOOL_NAMES = [item["function"]["name"] for item in TOOL_DEFINITIONS]
@@ -239,6 +262,7 @@ TOOL_ALIASES = {
     "list_airfoils": "openvsp_list_airfoils",
     "list_fuselage_styles": "openvsp_list_fuselage_styles",
     "evaluate_design": "openvsp_evaluate_design",
+    "list_design_rules": "openvsp_list_design_rules",
 }
 
 
@@ -270,6 +294,7 @@ class ToolExecutor:
             "openvsp_list_airfoils": self._list_airfoils,
             "openvsp_list_fuselage_styles": self._list_fuselage_styles,
             "openvsp_evaluate_design": self._evaluate_design,
+            "openvsp_list_design_rules": self._list_design_rules,
             "openvsp_build_aircraft": self._build_aircraft,
             "openvsp_modify_parameter": self._modify_parameter,
             "openvsp_run_vspaero": self._run_vspaero,
@@ -447,6 +472,14 @@ class ToolExecutor:
             "control_surfaces": geo.get("control_surfaces"),
             "geometry": _compact_geometry(geo),
         }
+
+    def _list_design_rules(self, arguments: dict[str, Any]) -> dict[str, Any]:
+        from .aero_rules import list_rules
+        return list_rules(
+            category=arguments.get("category"),
+            level=arguments.get("level"),
+            query=arguments.get("query"),
+        )
 
     def _evaluate_design(self, arguments: dict[str, Any]) -> dict[str, Any]:
         designer = self.designer
