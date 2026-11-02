@@ -87,6 +87,10 @@ python aii_design_agent.py --offline --config examples\offline_config.json
 
 更详细步骤见 `docs/04-开发与构建说明.md`。
 
+## 设计权与规则边界
+
+技术输入和 LLM 的工程判断是主导；内置气动经验、公式和规则仅作辅助估算、默认起点和风险提示，不是硬性判据。规则查询见 `openvsp_list_design_rules`，调研见 `docs/20-气动公式与设计规则调研.md`。
+
 ## 故障排查
 
 - `后端进程异常退出（exit code 9009）`：旧版会命中 Microsoft Store 的 python.exe 占位别名。最新版安装包内置 Python 3.13，并在启动前校验解释器和依赖；详见 `docs/18-AI后端9009启动失败-问题分析与修复.md`。
