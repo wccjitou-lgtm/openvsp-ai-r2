@@ -141,6 +141,11 @@ def aggregate_constraints(
     elif all_pass:
         feasibility = FEAS_MODEL
         recommendation = REC_ANALYSIS
+    elif items and not hard_unknown:
+        # 只有非硬约束（经验/建议）未通过时，仍保留“模型内可行”的提案，
+        # 但证据不完整、推荐为分析级；不能把经验规则当成硬判决。
+        feasibility = FEAS_MODEL
+        recommendation = REC_ANALYSIS
     else:
         feasibility = FEAS_UNKNOWN
         recommendation = REC_DIAGNOSTIC
