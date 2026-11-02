@@ -938,14 +938,12 @@ struct FinishedMessage
 };
 
 // ---------------------------------------------------------------------------
-// MCP 安装教程弹窗（不依赖 AI 后端，属于本地帮助/安装入口）
+// MCP 调用提示词弹窗（只保留可复制给 Agent / Harness 的提示词）
 // ---------------------------------------------------------------------------
 Fl_Window* g_MCPWindow = nullptr;
 Fl_Text_Buffer* g_MCPBuffer = nullptr;
 Fl_Text_Display* g_MCPDisplay = nullptr;
 std::string g_MCPText;
-std::string g_MCPDir;
-std::string g_MCPInstallCommand;
 
 std::string FullPathOf( const std::string& path )
 {
@@ -963,44 +961,12 @@ std::string FullPathOf( const std::string& path )
     return Narrow( std::wstring( buffer, n ) );
 }
 
-std::string ReadMCPTutorial( const std::string& mcp_dir )
-{
-    const std::string file = JoinPath( mcp_dir, "MCP-安装教程.md" );
-    std::ifstream in( Widen( file ), std::ios::binary );
-    if ( !in )
-    {
-        return std::string();
-    }
-    std::ostringstream text;
-    text << in.rdbuf();
-    return text.str();
-}
-
 void MCPCopyCB( Fl_Widget*, void* )
 {
     if ( g_MCPBuffer )
     {
         Fl::copy( g_MCPBuffer->text(), g_MCPBuffer->length(), 1 );
     }
-}
-
-void MCPCopyCommandCB( Fl_Widget*, void* )
-{
-    if ( !g_MCPInstallCommand.empty() )
-    {
-        Fl::copy( g_MCPInstallCommand.c_str(),
-                  static_cast<int>( g_MCPInstallCommand.size() ), 1 );
-    }
-}
-
-void MCPOpenDirCB( Fl_Widget*, void* )
-{
-    if ( g_MCPDir.empty() )
-    {
-        return;
-    }
-    ShellExecuteW( nullptr, L"open", Widen( g_MCPDir ).c_str(), nullptr, nullptr,
-                   SW_SHOWNORMAL );
 }
 
 void MCPCloseCB( Fl_Widget* w, void* )
@@ -1039,82 +1005,43 @@ void AIDesignWindow::ShowMCPTutorial()
     const std::string server = JoinPath( mcp_dir, "openvsp_mcp_server.py" );
     const std::string installer = JoinPath( mcp_dir, "install_mcp.py" );
 
-    std::string text = ReadMCPTutorial( mcp_dir );
-    std::ostringstream head;
-    head << "OpenVSP AI R2 MCP 安装与调用\n"
-         << "============================================================\n"
-         << "MCP 目录      : " << mcp_dir << "\n"
-         << "MCP Server    : " << server << "\n"
-         << "Python        : " << python << "\n"
-         << "OpenVSP 根目录: " << app_root << "\n\n"
-         << "【分发/安装说明】\n"
-         << "上面的绝对路径只对当前这台电脑/当前安装目录有效。\n"
-         << "软件安装到其他电脑或目录后，MCP 路径、Python 路径、OpenVSP 根目录都会变化。\n"
-         << "请不要把本机的绝对路径直接复制给别人；对方应使用其自己安装目录下的\n"
-         << "mcp\\install_mcp.py，或点击下方“复制安装命令”获取对方本机的命令。\n"
-         << "安装器会自动探测自身目录、Python 与 OpenVSP 根目录，不需要手工改成本机路径。\n\n"
-         << "通用命令（发给其他安装者时，把尖括号部分换成本机安装路径）：\n"
-         << "  python \"<你的OpenVSP安装目录>\\mcp\\install_mcp.py\" --install --target all\n\n"
-         << "让 Codex / Claude Code / ZCode / Kimi / DeepSeek Harness 自动安装：\n"
-         << "把下面命令原样交给 Agent 执行（或在本机终端执行）：\n\n"
-         << "  \"" << python << "\" \"" << installer << "\" --target all --install\n\n"
-         << "也可只装其中一个：\n"
-         << "  --target codex | claude | zcode | kimi | dsh\n\n"
-         << "验证 MCP：\n"
-         << "  \"" << python << "\" \"" << JoinPath( mcp_dir, "tests\\test_stdio.py" ) << "\"\n\n"
-         << "说明：安装器只写入本机 Agent 配置，不写 API Key；仅供本机 OpenVSP/MCP 使用。\n"
-         << "------------------------------------------------------------\n\n";
-    if ( !text.empty() )
-    {
-        head << text;
-    }
-    else
-    {
-        head << "（未找到 mcp/MCP-安装教程.md，下面是通用安装说明）\n\n"
-             << "1. Codex（OpenAI Codex CLI）\n"
-             << "   在 %USERPROFILE%\\.codex\\config.toml 增加：\n"
-             << "   [mcp_servers.openvsp]\n"
-             << "   command = \"" << python << "\"\n"
-             << "   args = [\"" << server << "\"]\n"
-             << "   env = { OPENVSP_ROOT = \"" << app_root << "\" }\n\n"
-             << "2. Claude Code\n"
-             << "   claude mcp add --transport stdio --scope user openvsp -- \""
-             << python << "\" \"" << server << "\"\n\n"
-             << "3. Kimi CLI / ZCode / DeepSeek Harness\n"
-             << "   优先执行上面的 install_mcp.py --target <agent> --install；\n"
-             << "   如当前 Agent 版本要求手动配置，把以下 JSON 片段加入其 MCP 配置（mcpServers）：\n"
-             << "   {\"mcpServers\":{\"openvsp\":{\"command\":\"" << python
-             << "\",\"args\":[\"" << server << "\"],\"env\":{\"OPENVSP_ROOT\":\""
-             << app_root << "\"}}}}\n\n"
-             << "4. DeepSeek Harness（DSH / Cordis overlay）\n"
-             << "   使用 @deepseek-ai/dsh-mcp-client 插件，stdio command/args/env 同上；\n"
-             << "   参考 mcp/README.md 与 mcp/MCP-安装教程.md。\n";
-    }
-    g_MCPInstallCommand = "\"" + python + "\" \"" + installer
-                         + "\" --install --target all";
-    g_MCPText = head.str();
-    g_MCPDir = mcp_dir;
+    std::ostringstream prompt;
+    prompt << "你是 OpenVSP 飞行器设计代理。请使用本机 OpenVSP AI R2 的 MCP 服务器完成设计、分析和报告任务。\n\n"
+           << "【任务要求】\n"
+           << "1. 通过 MCP 工具建立或读取 OpenVSP 模型；\n"
+           << "2. 运行 VSPAERO 气动与稳定性分析；\n"
+           << "3. 检查俯仰和航向静稳定性；若不稳定，按布局调整参数并复算，最多 3 轮；\n"
+           << "4. 使用最终模型和实际运行数据生成 Word 报告；\n"
+           << "5. 明确区分任务完成、工程可行、证据完整和推荐状态；不得伪造 pass 或把概念分析称为已验证可行。\n\n"
+           << "【MCP 服务器：stdio】\n"
+           << "command: \"" << python << "\"\n"
+           << "args: [\"" << server << "\"]\n"
+           << "env: OPENVSP_ROOT=\"" << app_root << "\"\n\n"
+           << "可用工具以 MCP tools/list 为准，主要包括：\n"
+           << "openvsp_new_model, openvsp_build_aircraft, openvsp_get_geometry,\n"
+           << "openvsp_modify_parameter, openvsp_run_vspaero, openvsp_export,\n"
+           << "openvsp_generate_report, openvsp_list_files。\n\n"
+           << "如果当前 Agent/Harness 尚未注册该 MCP 服务器，请先执行：\n"
+           << "\"" << python << "\" \"" << installer << "\" --install --target all\n"
+           << "或把上面的 stdio command/args/env 写入宿主 MCP 配置。\n";
+    g_MCPText = prompt.str();
 
     if ( !g_MCPWindow )
     {
-        Fl_Window* win = new Fl_Window( 960, 680, "OpenVSP AI R2 MCP 安装与调用" );
+        Fl_Window* win = new Fl_Window( 920, 650, "OpenVSP AI R2 MCP 调用提示词" );
         win->begin();
-        Fl_Box* title = new Fl_Box( 15, 8, 930, 26,
-            "MCP 安装与调用 — Codex / Claude Code / ZCode / Kimi / DeepSeek Harness" );
+        Fl_Box* title = new Fl_Box( 15, 8, 890, 28,
+            "MCP 调用提示词 — 复制后粘贴给 Agent / Harness" );
         title->labelfont( FL_BOLD );
         title->labelsize( 14 );
         g_MCPBuffer = new Fl_Text_Buffer();
-        g_MCPDisplay = new Fl_Text_Display( 15, 42, 930, 560 );
+        g_MCPDisplay = new Fl_Text_Display( 15, 44, 890, 530 );
         g_MCPDisplay->buffer( g_MCPBuffer );
         g_MCPDisplay->wrap_mode( Fl_Text_Display::WRAP_AT_BOUNDS, 0 );
-        Fl_Button* copy_btn = new Fl_Button( 15, 620, 110, 30, "复制教程" );
+        Fl_Button* copy_btn = new Fl_Button( 15, 590, 170, 32, "复制提示词" );
         copy_btn->callback( MCPCopyCB, nullptr );
-        Fl_Button* copy_cmd_btn = new Fl_Button( 130, 620, 150, 30, "复制安装命令" );
-        copy_cmd_btn->callback( MCPCopyCommandCB, nullptr );
-        copy_cmd_btn->tooltip( "复制当前电脑本安装目录的一键安装命令，交给 Agent 执行" );
-        Fl_Button* open_btn = new Fl_Button( 285, 620, 150, 30, "打开 MCP 目录" );
-        open_btn->callback( MCPOpenDirCB, nullptr );
-        Fl_Button* close_btn = new Fl_Button( 845, 620, 100, 30, "关闭" );
+        copy_btn->tooltip( "复制整段提示词，粘贴到 Agent / Harness 的输入框" );
+        Fl_Button* close_btn = new Fl_Button( 805, 590, 100, 32, "关闭" );
         close_btn->callback( MCPCloseCB, nullptr );
         win->end();
         win->set_modal();
@@ -1349,7 +1276,7 @@ void AIDesignWindow::BuildWidgets()
 
     m_MCPButton = new Fl_Button( 745, 536, 75, 28, "MCP调用" );
     m_MCPButton->callback( MCPTutorialCB, this );
-    m_MCPButton->tooltip( "查看并复制 Codex / Claude Code / ZCode / Kimi / DeepSeek Harness 的 MCP 安装命令" );
+    m_MCPButton->tooltip( "打开 MCP 调用提示词；复制后粘贴给 Agent / Harness" );
 
     m_OfflineCheck = new Fl_Check_Button( 635, 536, 105, 28, "离线模式" );
     m_OfflineCheck->tooltip( "不调用大模型，使用内置规则设计流程（无需 API Key）" );
