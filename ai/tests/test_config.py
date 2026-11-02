@@ -264,3 +264,27 @@ def test_operating_conditions_validation_warns(tmp_path):
     assert config.operating_conditions == {'speed_cruise_ms': 33.0}
     assert any('altitude_m' in item for item in config.warnings)
     assert any('unknown_key' in item for item in config.warnings)
+
+
+def test_modify_task_and_parent_metadata_are_accepted(tmp_path):
+    model = tmp_path / "parent.vsp3"
+    model.write_text("dummy", encoding="utf-8")
+    result = tmp_path / "result.json"
+    result.write_text("{}", encoding="utf-8")
+    from ai_design.config import AIConfig
+    cfg = AIConfig.from_dict({
+        "task": "modify",
+        "case_model": str(model),
+        "parent_model": str(model),
+        "parent_result": str(result),
+        "prompt": "把翼展改为 3.0 m",
+        "output_dir": str(tmp_path / "out"),
+        "provider": "deepseek",
+        "base_url": "https://api.deepseek.com",
+        "model": "deepseek-chat",
+    })
+    assert cfg.task == "modify"
+    assert cfg.case_model == str(model)
+    assert cfg.parent_model == str(model)
+    assert cfg.parent_result == str(result)
+    assert cfg.to_public_dict()["task"] == "modify"
