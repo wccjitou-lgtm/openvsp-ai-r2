@@ -32,11 +32,30 @@ ai/                       AI 设计后端（Python）
   ai_design_agent.py      CLI 入口
 mcp/                      MCP stdio 服务器和安装脚本
 patches/                  OpenVSP GUI 修改补丁和源文件
+installer/                Inno Setup 安装程序脚本
 docs/                     中文设计/构建/可靠设计文档
 examples/                 离线配置示例
 scripts/                  构建、基线清单和 Profili 本地导入脚本
 validation/               轻量验证结果与四布局截图
 ```
+
+## Windows 安装程序
+
+`installer/OpenVSP-AI-R2.iss` 是 Inno Setup 6 脚本，用于把便携版目录构建为安装程序。安装器会：
+
+- 安装到 `%LOCALAPPDATA%\Programs\OpenVSP AI R2`；
+- 写入用户环境变量 `OPENVSP_R2_ROOT`、`OPENVSP_ROOT`、`OPENVSP_PYTHONPATH` 等；
+- 生成 `mcp\install_context.ini`，记录安装目录、Python 和 MCP Server 路径；
+- 下次打开 **MCP调用** 时，提示词会自动读取这些路径；
+- 保留其他电脑的通用定位步骤，提示词复制到别的机器后仍可重新解析。
+
+构建：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File installer\build_installer.ps1
+```
+
+安装包不包含在 Git 仓库中，生成后位于 `dist\installer\`。
 
 ## 环境要求
 
