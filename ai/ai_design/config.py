@@ -174,6 +174,9 @@ class AIConfig:
     #: 上传案例 .vsp3（GUI「上传案例…」写入 ai_job.json 的 case_model；
     #: task=design 时作为修改基线、task=ga 时优先作为 GA 基线）
     case_model: str = ""
+    #: 第一轮设计的模型/结果，用于“继续修改当前设计”
+    parent_model: str = ""
+    parent_result: str = ""
     #: 可选工况覆盖（altitude_m / speed_cruise_ms / rho / sound_speed_ms）
     operating_conditions: dict[str, Any] = field(default_factory=dict)
     title: str = ""
@@ -219,7 +222,8 @@ class AIConfig:
             "provider", "base_url", "api_key", "api_key_env", "model", "prompt",
             "output_dir", "template", "report_template", "ui", "mode",
             "max_iterations", "temperature", "attachments",
-            "task", "ga", "seed_model", "case_model", "operating_conditions",
+            "task", "ga", "seed_model", "case_model", "parent_model",
+            "parent_result", "modify", "operating_conditions",
             "timeout", "offline", "design", "vsp", "title",
         }
         unknown = sorted(set(raw) - known)
@@ -244,6 +248,8 @@ class AIConfig:
             ga={str(key): value for key, value in ga_cfg.items()},
             seed_model=str(raw.get("seed_model") or "").strip(),
             case_model=str(raw.get("case_model") or "").strip(),
+            parent_model=str(raw.get("parent_model") or "").strip(),
+            parent_result=str(raw.get("parent_result") or "").strip(),
             operating_conditions={str(key): value
                                   for key, value in operating.items()},
             title=str(raw.get("title") or "").strip(),
@@ -312,8 +318,10 @@ class AIConfig:
         task = str(self.task or "design").strip().lower()
         if task in ("genetic", "genetic_algorithm", "ga_optimizer", "optimize"):
             task = "ga"
-        if task not in ("design", "ga"):
-            raise ConfigError(f"task 非法: {self.task!r}，可选: design / ga")
+        if task in ("modify", "modify_design", "iteration", "followup"):
+            task = "modify"
+        if task not in ("design", "ga", "modify"):
+            raise ConfigError(f"task 非法: {self.task!r}，可选: design / ga / modify")
         self.task = task
         if self.seed_model:
             self.seed_model = str(self.resolve_path(self.seed_model))
@@ -329,6 +337,13 @@ class AIConfig:
             elif case_path.suffix.lower() != ".vsp3":
                 self.warnings.append(
                     f"case_model 不是 .vsp3 文件（将忽略案例）: {case_path.name}")
+        for field_name in ("parent_model", "parent_result"):
+            value = getattr(self, field_name, "")
+            if value:
+                value = str(self.resolve_path(value))
+                setattr(self, field_name, value)
+                if not Path(value).is_file():
+                    self.warnings.append(f"{field_name} 不存在（继续修改功能将无法引用）: {value}")
         cleaned_operating: dict[str, float] = {}
         for key, value in (self.operating_conditions or {}).items():
             if key not in ("altitude_m", "speed_cruise_ms", "velocity_ms",
@@ -501,6 +516,8 @@ class AIConfig:
             "ga": dict(self.ga),
             "seed_model": self.seed_model,
             "case_model": self.case_model,
+            "parent_model": self.parent_model,
+            "parent_result": self.parent_result,
             "operating_conditions": dict(self.operating_conditions),
         }
         return data
