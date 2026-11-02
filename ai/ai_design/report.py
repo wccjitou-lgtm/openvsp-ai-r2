@@ -980,7 +980,8 @@ def build_blocks(data: dict[str, Any], figures: dict[str, str],
             "；证据=" + str(decision.get("evidence_status", "—")) +
             "；推荐=" + str(decision.get("recommendation_status", "—")) +
             "。本报告中的经验准则尚未绑定 run_id/原始文件证据，"
-            "因此证据状态为不完整，不能把本报告表述为已验证可行或飞行放行。",
+            "因此证据状态为不完整，不能把本报告表述为已验证可行或飞行放行。"
+            "经验准则和气动公式仅作设计辅助，不是硬性合格判据。",
             10.5, "justify", SONG, False))
     blocks["{%RESULTS%}"] = result_blocks
 
