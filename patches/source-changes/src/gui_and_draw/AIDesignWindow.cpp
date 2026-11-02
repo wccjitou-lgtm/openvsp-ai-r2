@@ -961,6 +961,48 @@ std::string FullPathOf( const std::string& path )
     return Narrow( std::wstring( buffer, n ) );
 }
 
+std::string ReadInstallContext( const std::string& mcp_dir )
+{
+    const std::string file = JoinPath( mcp_dir, "install_context.ini" );
+    std::ifstream in( Widen( file ), std::ios::binary );
+    if ( !in )
+    {
+        return std::string();
+    }
+    std::string text;
+    std::string line;
+    bool first_line = true;
+    while ( std::getline( in, line ) )
+    {
+        if ( !line.empty() && line.back() == '\r' )
+        {
+            line.pop_back();
+        }
+        if ( first_line && line.size() >= 3 &&
+             static_cast<unsigned char>( line[0] ) == 0xEF &&
+             static_cast<unsigned char>( line[1] ) == 0xBB &&
+             static_cast<unsigned char>( line[2] ) == 0xBF )
+        {
+            line.erase( 0, 3 );
+        }
+        first_line = false;
+        std::size_t begin = line.find_first_not_of( " \t" );
+        if ( begin == std::string::npos )
+        {
+            continue;
+        }
+        std::size_t end = line.find_last_not_of( " \t" );
+        line = line.substr( begin, end - begin + 1 );
+        if ( line.empty() || line[0] == '#' || line[0] == ';' )
+        {
+            continue;
+        }
+        text += line;
+        text += '\n';
+    }
+    return text;
+}
+
 void MCPCopyCB( Fl_Widget*, void* )
 {
     if ( g_MCPBuffer )
@@ -998,8 +1040,10 @@ void AIDesignWindow::MCPTutorialCB( Fl_Widget*, void* data )
 
 void AIDesignWindow::ShowMCPTutorial()
 {
-    // 提示词必须可移植：不得写入当前电脑的绝对路径。
-    // Agent 在目标电脑上解析 APP_ROOT / PYTHON 后安装并注册 MCP。
+    // 提示词主体保持可移植；安装程序写入的本机路径作为可选加速信息。
+    const std::string ai_dir = FullPathOf( ResolveAIDir() );
+    const std::string mcp_dir = FullPathOf( JoinPath( ai_dir, "..\\mcp" ) );
+    const std::string install_context = ReadInstallContext( mcp_dir );
     const char* portable_prompt = R"OVSP_PROMPT(你是 OpenVSP 飞行器设计代理。请使用目标电脑上安装的 OpenVSP AI R2 MCP 服务器完成设计、分析和报告任务。
 
 【0. 重要：路径可移植】
@@ -1061,7 +1105,16 @@ void AIDesignWindow::ShowMCPTutorial()
 - 如 MCP 工具未出现，先检查 Python、OPENVSP_ROOT 和 server 路径，不要退化为伪造数据。
 )OVSP_PROMPT";
 
-    g_MCPText = portable_prompt;
+    std::ostringstream prompt;
+    if ( !install_context.empty() )
+    {
+        prompt << "【本机安装信息（由安装程序写入，供本机 Agent 优先使用）】\n"
+               << install_context
+               << "说明：如果目标电脑不是这台电脑，或上述路径不存在，请忽略本机路径，"
+               << "按下面的【1. 定位 APP_ROOT】重新解析。\n\n";
+    }
+    prompt << portable_prompt;
+    g_MCPText = prompt.str();
 
     if ( !g_MCPWindow )
     {
