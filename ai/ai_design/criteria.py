@@ -93,6 +93,7 @@ def evaluate_design(spec: Any, geometry: dict[str, Any],
     wing = _as_dict(geometry.get("wing"))
     htail = _as_dict(geometry.get("htail"))
     vtail = _as_dict(geometry.get("vtail")) or _as_dict(geometry.get("vtail_conventional"))
+    vtail_right = _as_dict(geometry.get("vtail_right"))
     fuselage = _as_dict(geometry.get("fuselage"))
     sizing = _as_dict(geometry.get("sizing"))
     design = _as_dict(metrics.get("design"))
