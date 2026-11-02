@@ -998,50 +998,87 @@ void AIDesignWindow::MCPTutorialCB( Fl_Widget*, void* data )
 
 void AIDesignWindow::ShowMCPTutorial()
 {
-    const std::string ai_dir = FullPathOf( ResolveAIDir() );
-    const std::string mcp_dir = FullPathOf( JoinPath( ai_dir, "..\\mcp" ) );
-    const std::string app_root = FullPathOf( JoinPath( ai_dir, ".." ) );
-    const std::string python = ResolvePython();
-    const std::string server = JoinPath( mcp_dir, "openvsp_mcp_server.py" );
-    const std::string installer = JoinPath( mcp_dir, "install_mcp.py" );
+    // 提示词必须可移植：不得写入当前电脑的绝对路径。
+    // Agent 在目标电脑上解析 APP_ROOT / PYTHON 后安装并注册 MCP。
+    const char* portable_prompt = R"OVSP_PROMPT(你是 OpenVSP 飞行器设计代理。请使用目标电脑上安装的 OpenVSP AI R2 MCP 服务器完成设计、分析和报告任务。
 
-    std::ostringstream prompt;
-    prompt << "你是 OpenVSP 飞行器设计代理。请使用本机 OpenVSP AI R2 的 MCP 服务器完成设计、分析和报告任务。\n\n"
-           << "【任务要求】\n"
-           << "1. 通过 MCP 工具建立或读取 OpenVSP 模型；\n"
-           << "2. 运行 VSPAERO 气动与稳定性分析；\n"
-           << "3. 检查俯仰和航向静稳定性；若不稳定，按布局调整参数并复算，最多 3 轮；\n"
-           << "4. 使用最终模型和实际运行数据生成 Word 报告；\n"
-           << "5. 明确区分任务完成、工程可行、证据完整和推荐状态；不得伪造 pass 或把概念分析称为已验证可行。\n\n"
-           << "【MCP 服务器：stdio】\n"
-           << "command: \"" << python << "\"\n"
-           << "args: [\"" << server << "\"]\n"
-           << "env: OPENVSP_ROOT=\"" << app_root << "\"\n\n"
-           << "可用工具以 MCP tools/list 为准，主要包括：\n"
-           << "openvsp_new_model, openvsp_build_aircraft, openvsp_get_geometry,\n"
-           << "openvsp_modify_parameter, openvsp_run_vspaero, openvsp_export,\n"
-           << "openvsp_generate_report, openvsp_list_files。\n\n"
-           << "如果当前 Agent/Harness 尚未注册该 MCP 服务器，请先执行：\n"
-           << "\"" << python << "\" \"" << installer << "\" --install --target all\n"
-           << "或把上面的 stdio command/args/env 写入宿主 MCP 配置。\n";
-    g_MCPText = prompt.str();
+【0. 重要：路径可移植】
+本提示词不绑定任何一台电脑的绝对路径。请先在本机解析下面两个变量，不要照抄示例路径：
+  APP_ROOT = OpenVSP AI R2 安装目录（目录内应有 vsp.exe、ai\、mcp\）
+  PYTHON   = 本机 Python 3.11+ 解释器（优先使用 APP_ROOT\.venv\Scripts\python.exe）
+
+【1. 定位 APP_ROOT】
+1. 优先读取环境变量 OPENVSP_R2_ROOT 或 OPENVSP_ROOT；
+2. 如果 OpenVSP AI R2 正在运行，可直接从进程取得 vsp.exe 路径：
+     Get-Process vsp -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path
+   把 vsp.exe 所在目录设为 APP_ROOT；
+3. 如果软件未运行，检查开始菜单快捷方式：
+     Get-ChildItem "$env:APPDATA\Microsoft\Windows\Start Menu\Programs", "$env:ProgramData\Microsoft\Windows\Start Menu\Programs" -Filter "*OpenVSP*.lnk" -Recurse -ErrorAction SilentlyContinue
+   通过快捷方式属性解析 TargetPath，把 vsp.exe 所在目录设为 APP_ROOT；
+4. 也可以浅层检查常见安装位置（不要递归遍历整个磁盘）：
+     Get-ChildItem "$env:LOCALAPPDATA\Programs", "$env:USERPROFILE\Desktop", "$env:USERPROFILE\Downloads", "$env:ProgramFiles", "D:\" -Directory -Filter "OpenVSP*" -ErrorAction SilentlyContinue
+5. 找到候选目录后必须确认存在：
+     APP_ROOT\vsp.exe
+     APP_ROOT\ai\ai_design_agent.py
+     APP_ROOT\mcp\openvsp_mcp_server.py
+6. 如果仍找不到，向用户询问安装目录；不要遍历全盘，也不要把示例路径当成真实路径。
+7. 确认 APP_ROOT 后，把 OPENVSP_ROOT 设置为 APP_ROOT。
+
+【2. 检查 Python 和依赖】
+优先使用 APP_ROOT\.venv\Scripts\python.exe；若不存在，使用系统 Python 3.11+。
+若目标电脑没有 Python，先向用户说明并安装官方 Python（勾选 Add to PATH），不要假设已有依赖。
+  & $PYTHON -c "import sys; print(sys.version)"
+  & $PYTHON -m pip install -r "$APP_ROOT\ai\requirements.txt"
+如果依赖安装失败，报告缺少的包，不要修改系统 Python 或删除用户环境。
+
+【3. 注册 MCP 服务器】
+在 APP_ROOT 下执行（安装器会自动探测本机路径，不要手写其他电脑的路径）：
+  & $PYTHON "$APP_ROOT\mcp\install_mcp.py" --install --target all
+若当前 Agent/Harness 不支持自动安装，请使用以下 stdio 配置，并把变量解析成本机实际值：
+  command: $PYTHON
+  args: ["$APP_ROOT\mcp\openvsp_mcp_server.py"]
+  env:
+    OPENVSP_ROOT=$APP_ROOT
+    OPENVSP_PYTHONPATH=$APP_ROOT\python
+写配置前先向用户说明会修改本机 Agent/MCP 配置文件；重启或重载 Agent 后，确认 MCP tools/list 中出现 openvsp_* 工具。
+
+【4. 设计任务要求】
+1. 通过 MCP 工具建立或读取 OpenVSP 模型；
+2. 运行 VSPAERO 气动与稳定性分析；
+3. 检查俯仰和航向静稳定性；若不稳定，按布局调整参数并复算，最多 3 轮；
+4. 使用最终模型和实际运行数据生成 Word 报告；
+5. 明确区分任务完成、工程可行、证据完整和推荐状态；不得伪造 pass 或把概念分析称为已验证可行。
+
+【5. 可用工具】
+以目标电脑 MCP tools/list 为准，主要包括：
+  openvsp_new_model, openvsp_build_aircraft, openvsp_get_geometry,
+  openvsp_modify_parameter, openvsp_run_vspaero, openvsp_export,
+  openvsp_generate_report, openvsp_list_files。
+
+【6. 安装前检查】
+- 不要从本提示词复制任何本机绝对路径；所有路径必须先在本机解析；
+- 不要上传 API Key、用户附件或本机配置文件；
+- 如 MCP 工具未出现，先检查 Python、OPENVSP_ROOT 和 server 路径，不要退化为伪造数据。
+)OVSP_PROMPT";
+
+    g_MCPText = portable_prompt;
 
     if ( !g_MCPWindow )
     {
-        Fl_Window* win = new Fl_Window( 920, 650, "OpenVSP AI R2 MCP 调用提示词" );
+        Fl_Window* win = new Fl_Window( 920, 670, "OpenVSP AI R2 MCP 调用提示词" );
         win->begin();
         Fl_Box* title = new Fl_Box( 15, 8, 890, 28,
-            "MCP 调用提示词 — 复制后粘贴给 Agent / Harness" );
+            "MCP 调用提示词 — 可复制到其他电脑的 Agent / Harness" );
         title->labelfont( FL_BOLD );
         title->labelsize( 14 );
         g_MCPBuffer = new Fl_Text_Buffer();
-        g_MCPDisplay = new Fl_Text_Display( 15, 44, 890, 530 );
+        g_MCPDisplay = new Fl_Text_Display( 15, 44, 890, 550 );
         g_MCPDisplay->buffer( g_MCPBuffer );
         g_MCPDisplay->wrap_mode( Fl_Text_Display::WRAP_AT_BOUNDS, 0 );
-        Fl_Button* copy_btn = new Fl_Button( 15, 590, 170, 32, "复制提示词" );
+        Fl_Button* copy_btn = new Fl_Button( 15, 610, 190, 32, "复制提示词" );
         copy_btn->callback( MCPCopyCB, nullptr );
-        copy_btn->tooltip( "复制整段提示词，粘贴到 Agent / Harness 的输入框" );
-        Fl_Button* close_btn = new Fl_Button( 805, 590, 100, 32, "关闭" );
+        copy_btn->tooltip( "复制整段可移植提示词，粘贴到其他电脑的 Agent / Harness" );
+        Fl_Button* close_btn = new Fl_Button( 805, 610, 100, 32, "关闭" );
         close_btn->callback( MCPCloseCB, nullptr );
         win->end();
         win->set_modal();
