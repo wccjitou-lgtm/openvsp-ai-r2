@@ -70,6 +70,8 @@ python aii_design_agent.py --offline --config examples\offline_config.json
 
 ## MCP
 
+GUI 中的 **MCP调用** 按钮只显示一段可直接复制给 Agent / Harness 的提示词，不再展示安装教程或目录操作。
+
 ```powershell
 python mcp\install_mcp.py --print-command
 ```
