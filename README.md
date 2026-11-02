@@ -61,7 +61,7 @@ powershell -ExecutionPolicy Bypass -File installer\build_installer.ps1
 
 - Windows 10/11
 - OpenVSP 3.51.3（需要 Python API 和 VSPAERO）
-- Python 3.13（建议；至少 Python 3.11）
+- Python 3.13（源码构建/外部运行时需要；Windows 安装包已内置 `ai\python`，终端用户无需安装）
 - Visual Studio 2022 + CMake（仅从源码重建 GUI 时需要）
 - 可选：DeepSeek / GLM / Kimi / OpenAI 或兼容服务 API Key
 
@@ -86,6 +86,10 @@ python aii_design_agent.py --offline --config examples\offline_config.json
 5. 启动 `vsp.exe`，菜单栏进入 **AI辅助 → AI 设计...**。
 
 更详细步骤见 `docs/04-开发与构建说明.md`。
+
+## 故障排查
+
+- `后端进程异常退出（exit code 9009）`：旧版会命中 Microsoft Store 的 python.exe 占位别名。最新版安装包内置 Python 3.13，并在启动前校验解释器和依赖；详见 `docs/18-AI后端9009启动失败-问题分析与修复.md`。
 
 ## MCP
 
