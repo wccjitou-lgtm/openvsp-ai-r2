@@ -316,6 +316,9 @@ def evaluate_design(spec: Any, geometry: dict[str, Any],
         "summary": {"pass": all_status.count("pass"), "warn": warn_count,
                     "fail": fail_count, "total": len(checks)},
         "overall": overall,
+        "authority": "advisory",
+        "advisory": True,
         "inertia_estimate": {k: round(v, 3) for k, v in mass.items()},
-        "note": "动态与操纵性为简化二自由度/工程估算，需用专项工具或试飞复核。",
+        "note": "这些准则和动态/操纵性均为简化工程估算，只作设计辅助，"
+                "不是硬性合格判据；技术输入和设计者/LLM 的工程判断优先。",
     }
