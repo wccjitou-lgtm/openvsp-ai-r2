@@ -211,6 +211,297 @@ bool FileExists( const std::string& path )
     return attr != INVALID_FILE_ATTRIBUTES && !( attr & FILE_ATTRIBUTE_DIRECTORY );
 }
 
+std::string NormalizePathForCompare( const std::string& path )
+{
+    std::string value = path;
+    std::replace( value.begin(), value.end(), '/', '\\' );
+    std::transform( value.begin(), value.end(), value.begin(),
+                    []( unsigned char c ) { return static_cast<char>( std::tolower( c ) ); } );
+    return value;
+}
+
+bool IsStorePythonAliasPath( const std::string& path )
+{
+    // Microsoft Store 的 python.exe / python3.exe 是 App Execution Alias：
+    // 常见位置是 %LOCALAPPDATA%\Microsoft\WindowsApps，0 字节且带重解析点。
+    return NormalizePathForCompare( path ).find( "\\microsoft\\windowsapps\\" )
+           != std::string::npos;
+}
+
+bool IsUsablePythonPath( const std::string& path )
+{
+    if ( path.empty() || !FileExists( path ) )
+    {
+        return false;
+    }
+    if ( IsStorePythonAliasPath( path ) )
+    {
+        return false;
+    }
+    const std::wstring wide = Widen( path );
+    const DWORD attr = GetFileAttributesW( wide.c_str() );
+    if ( attr == INVALID_FILE_ATTRIBUTES || ( attr & FILE_ATTRIBUTE_DIRECTORY ) )
+    {
+        return false;
+    }
+    if ( attr & FILE_ATTRIBUTE_REPARSE_POINT )
+    {
+        return false;
+    }
+    WIN32_FILE_ATTRIBUTE_DATA data{};
+    if ( !GetFileAttributesExW( wide.c_str(), GetFileExInfoStandard, &data ) )
+    {
+        return false;
+    }
+    const ULONGLONG size = ( static_cast<ULONGLONG>( data.nFileSizeHigh ) << 32 )
+                         | data.nFileSizeLow;
+    if ( size == 0 )
+    {
+        return false;
+    }
+    HANDLE handle = CreateFileW( wide.c_str(), GENERIC_READ,
+                                 FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                                 nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr );
+    if ( handle == INVALID_HANDLE_VALUE )
+    {
+        return false;
+    }
+    CloseHandle( handle );
+    return true;
+}
+
+std::string g_PythonSource;
+std::string g_PythonLastRejected;
+std::string g_ProbedPython;
+bool g_PythonProbePassed = false;
+
+std::string JoinPath( const std::string& a, const std::string& b );
+
+std::string ExplainExitCode( int code )
+{
+    switch ( code )
+    {
+    case 9009:
+        return "9009 = 系统找不到可执行文件；本机很可能只有 Microsoft Store 的 python.exe 占位别名，没有真正的 Python 3.13";
+    case 3221225781:
+        return "0xC0000135 = 缺少 DLL（VCRuntime 或 OpenVSP Python API 依赖）";
+    case 3221225785:
+        return "0xC0000139 = DLL 入口点缺失；通常是 Python 版本与 cp313 的 _vsp.pyd 不匹配";
+    case 3221225477:
+        return "0xC0000005 = 访问冲突；请附日志和 result.json 联系开发者";
+    case 1:
+        return "1 = 后端脚本报错；请查看上方 [error] 和输出目录 result.json";
+    default:
+        return "退出码 " + std::to_string( code );
+    }
+}
+
+struct CaptureResult
+{
+    bool started = false;
+    bool timed_out = false;
+    DWORD exit_code = 1;
+    std::string output;
+    std::string error;
+};
+
+CaptureResult RunCapture( const std::string& command, const std::string& work_dir,
+                          DWORD timeout_ms )
+{
+    CaptureResult result;
+    SECURITY_ATTRIBUTES attributes;
+    attributes.nLength = sizeof( attributes );
+    attributes.lpSecurityDescriptor = nullptr;
+    attributes.bInheritHandle = TRUE;
+    HANDLE read_pipe = nullptr;
+    HANDLE write_pipe = nullptr;
+    if ( !CreatePipe( &read_pipe, &write_pipe, &attributes, 0 ) )
+    {
+        result.error = "CreatePipe failed: " + std::to_string( GetLastError() );
+        return result;
+    }
+    SetHandleInformation( read_pipe, HANDLE_FLAG_INHERIT, 0 );
+    STARTUPINFOW startup;
+    std::memset( &startup, 0, sizeof( startup ) );
+    startup.cb = sizeof( startup );
+    startup.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+    startup.wShowWindow = SW_HIDE;
+    startup.hStdOutput = write_pipe;
+    startup.hStdError = write_pipe;
+    startup.hStdInput = GetStdHandle( STD_INPUT_HANDLE );
+    PROCESS_INFORMATION process;
+    std::memset( &process, 0, sizeof( process ) );
+    std::wstring command_line = Widen( command );
+    std::vector<wchar_t> buffer( command_line.begin(), command_line.end() );
+    buffer.push_back( L'\0' );
+    const std::wstring cwd = Widen( work_dir );
+    if ( !CreateProcessW( nullptr, buffer.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW,
+                          nullptr, cwd.empty() ? nullptr : cwd.c_str(),
+                          &startup, &process ) )
+    {
+        result.error = "CreateProcess failed: " + std::to_string( GetLastError() );
+        CloseHandle( read_pipe );
+        CloseHandle( write_pipe );
+        return result;
+    }
+    result.started = true;
+    CloseHandle( write_pipe );
+    CloseHandle( process.hThread );
+    const DWORD start = GetTickCount();
+    bool canceled = false;
+    while ( true )
+    {
+        DWORD available = 0;
+        if ( PeekNamedPipe( read_pipe, nullptr, 0, nullptr, &available, nullptr ) )
+        {
+            while ( available > 0 )
+            {
+                char chunk[4096];
+                DWORD to_read = available > sizeof( chunk ) ? sizeof( chunk ) : available;
+                DWORD got = 0;
+                if ( !ReadFile( read_pipe, chunk, to_read, &got, nullptr ) || got == 0 )
+                {
+                    break;
+                }
+                result.output.append( chunk, got );
+                available -= got;
+            }
+        }
+        const DWORD wait = WaitForSingleObject( process.hProcess, 0 );
+        if ( wait == WAIT_OBJECT_0 )
+        {
+            break;
+        }
+        if ( GetTickCount() - start > timeout_ms )
+        {
+            TerminateProcess( process.hProcess, 1 );
+            WaitForSingleObject( process.hProcess, 2000 );
+            result.timed_out = true;
+            canceled = true;
+            break;
+        }
+        Sleep( 20 );
+    }
+    // Drain anything still buffered.
+    DWORD available = 0;
+    while ( PeekNamedPipe( read_pipe, nullptr, 0, nullptr, &available, nullptr ) && available > 0 )
+    {
+        char chunk[4096];
+        DWORD to_read = available > sizeof( chunk ) ? sizeof( chunk ) : available;
+        DWORD got = 0;
+        if ( !ReadFile( read_pipe, chunk, to_read, &got, nullptr ) || got == 0 )
+        {
+            break;
+        }
+        result.output.append( chunk, got );
+        available -= got;
+    }
+    DWORD code = 1;
+    GetExitCodeProcess( process.hProcess, &code );
+    result.exit_code = code;
+    CloseHandle( read_pipe );
+    CloseHandle( process.hProcess );
+    (void)canceled;
+    return result;
+}
+
+std::string ProbePython( const std::string& python, const std::string& ai_dir )
+{
+    wchar_t temp_dir[MAX_PATH] = { 0 };
+    if ( GetTempPathW( MAX_PATH, temp_dir ) == 0 )
+    {
+        return "无法获取临时目录，不能执行 Python 自检。";
+    }
+    const std::string probe_path = JoinPath( Narrow( temp_dir ),
+        "openvsp_ai_probe_" + std::to_string( GetCurrentProcessId() ) + ".py" );
+    std::ofstream probe( Widen( probe_path ), std::ios::binary );
+    if ( !probe )
+    {
+        return "无法写入 Python 自检脚本。";
+    }
+    const char* script =
+        "import sys, importlib.util, json\n"
+        "mods = ['numpy', 'docx', 'matplotlib', 'pypdf', 'openpyxl', 'six']\n"
+        "missing = [m for m in mods if importlib.util.find_spec(m) is None]\n"
+        "print('PROBE_VERSION=' + '.'.join(map(str, sys.version_info[:3])))\n"
+        "print('PROBE_EXECUTABLE=' + sys.executable)\n"
+        "print('PROBE_MISSING=' + ','.join(missing))\n"
+        "print('PROBE_VSP_API=' + ('1' if importlib.util.find_spec('openvsp') is not None else '0'))\n";
+    probe.write( script, static_cast<std::streamsize>( std::strlen( script ) ) );
+    probe.close();
+
+    const std::string command = "\"" + python + "\" \"" + probe_path + "\"";
+    CaptureResult captured = RunCapture( command, ai_dir, 8000 );
+    DeleteFileW( Widen( probe_path ).c_str() );
+    if ( !captured.started )
+    {
+        return "无法启动 Python 自检：" + captured.error;
+    }
+    if ( captured.timed_out )
+    {
+        return "Python 自检超时（8 秒），解释器可能损坏或被杀毒软件拦截。";
+    }
+    std::string version;
+    std::string executable;
+    std::string missing;
+    std::string vsp_api;
+    std::istringstream stream( captured.output );
+    std::string line;
+    while ( std::getline( stream, line ) )
+    {
+        if ( !line.empty() && line.back() == '\r' )
+        {
+            line.pop_back();
+        }
+        if ( line.rfind( "PROBE_VERSION=", 0 ) == 0 )
+        {
+            version = line.substr( std::strlen( "PROBE_VERSION=" ) );
+        }
+        else if ( line.rfind( "PROBE_EXECUTABLE=", 0 ) == 0 )
+        {
+            executable = line.substr( std::strlen( "PROBE_EXECUTABLE=" ) );
+        }
+        else if ( line.rfind( "PROBE_MISSING=", 0 ) == 0 )
+        {
+            missing = line.substr( std::strlen( "PROBE_MISSING=" ) );
+        }
+        else if ( line.rfind( "PROBE_VSP_API=", 0 ) == 0 )
+        {
+            vsp_api = line.substr( std::strlen( "PROBE_VSP_API=" ) );
+        }
+    }
+    if ( captured.exit_code != 0 || version.empty() )
+    {
+        std::string message = "Python 自检失败（退出码 " + std::to_string( captured.exit_code )
+                            + "）。\n" + ExplainExitCode( static_cast<int>( captured.exit_code ) );
+        if ( !captured.output.empty() )
+        {
+            message += "\n输出：" + captured.output.substr( 0, 500 );
+        }
+        return message;
+    }
+    if ( version.rfind( "3.13", 0 ) != 0 )
+    {
+        return "Python 版本为 " + version + "，但随包 OpenVSP Python API 是 cp313，需要 Python 3.13。\n"
+               "当前解释器：" + ( executable.empty() ? python : executable );
+    }
+    if ( !missing.empty() )
+    {
+        const std::string requirements = JoinPath( ai_dir, "requirements.txt" );
+        return "Python 3.13 可用，但缺少依赖：" + missing + "\n\n"
+               "请在命令行执行：\n  \"" + python + "\" -m pip install -r \""
+               + requirements + "\"\n\n"
+               "安装完成后重新点“开始设计”。";
+    }
+    if ( vsp_api == "0" )
+    {
+        // Not fatal here: OpenVSP API may be provided through OPENVSP_ROOT at
+        // process start. Keep it as an informational diagnostic.
+        (void)vsp_api;
+    }
+    return std::string();
+}
+
 void EnsureDirectory( const std::string& path )
 {
     if ( path.empty() )
@@ -997,6 +1288,15 @@ std::string ReadInstallContext( const std::string& mcp_dir )
         {
             continue;
         }
+        if ( line.rfind( "PYTHON=", 0 ) == 0 )
+        {
+            const std::string value = Trim( line.substr( std::strlen( "PYTHON=" ) ) );
+            if ( !IsUsablePythonPath( value ) )
+            {
+                text += "# 提示：安装器记录的 Python 路径不可用（可能是 Microsoft Store 别名），请按下方步骤重新解析\n";
+                continue;
+            }
+        }
         text += line;
         text += '\n';
     }
@@ -1049,7 +1349,7 @@ void AIDesignWindow::ShowMCPTutorial()
 【0. 重要：路径可移植】
 本提示词不绑定任何一台电脑的绝对路径。请先在本机解析下面两个变量，不要照抄示例路径：
   APP_ROOT = OpenVSP AI R2 安装目录（目录内应有 vsp.exe、ai\、mcp\）
-  PYTHON   = 本机 Python 3.11+ 解释器（优先使用 APP_ROOT\.venv\Scripts\python.exe）
+  PYTHON   = 本机 Python 3.13 解释器（优先 APP_ROOT\ai\python\python.exe，其次 APP_ROOT\.venv\Scripts\python.exe）
 
 【1. 定位 APP_ROOT】
 1. 优先读取环境变量 OPENVSP_R2_ROOT 或 OPENVSP_ROOT；
@@ -1069,7 +1369,7 @@ void AIDesignWindow::ShowMCPTutorial()
 7. 确认 APP_ROOT 后，把 OPENVSP_ROOT 设置为 APP_ROOT。
 
 【2. 检查 Python 和依赖】
-优先使用 APP_ROOT\.venv\Scripts\python.exe；若不存在，使用系统 Python 3.11+。
+优先使用 APP_ROOT\ai\python\python.exe（安装包内置），其次 APP_ROOT\.venv\Scripts\python.exe，最后使用系统 Python 3.13。
 若目标电脑没有 Python，先向用户说明并安装官方 Python（勾选 Add to PATH），不要假设已有依赖。
   & $PYTHON -c "import sys; print(sys.version)"
   & $PYTHON -m pip install -r "$APP_ROOT\ai\requirements.txt"
@@ -1455,7 +1755,6 @@ std::string AIDesignWindow::ResolveAIDir() const
     {
         candidates.push_back( JoinPath( r2_root, "ai" ) );
     }
-    candidates.push_back( "D:\\Zcoding\\OpenVSP-R2\\ai" );
 
     for ( const std::string& candidate : candidates )
     {
@@ -1473,59 +1772,113 @@ std::string AIDesignWindow::ResolveAIDir() const
 
 std::string AIDesignWindow::ResolvePython() const
 {
+    g_PythonSource.clear();
+    g_PythonLastRejected.clear();
+
+    auto consider = []( const std::string& candidate, const std::string& source ) -> bool
+    {
+        if ( IsUsablePythonPath( candidate ) )
+        {
+            g_PythonSource = source;
+            return true;
+        }
+        if ( !candidate.empty() && FileExists( candidate ) )
+        {
+            g_PythonLastRejected = candidate;
+        }
+        return false;
+    };
+
+    // 1) Explicit environment override.
     const std::string env_python = GetEnvUtf8( "OPENVSP_AI_PYTHON" );
-    if ( !env_python.empty() && FileExists( env_python ) )
+    if ( !env_python.empty() && consider( env_python, "env:OPENVSP_AI_PYTHON" ) )
     {
         return env_python;
     }
+
+    // 2) Bundled runtime (ai\python) and per-install venv.
     const std::string ai_dir = ResolveAIDir();
     if ( !ai_dir.empty() )
     {
         const std::string bundled = JoinPath( JoinPath( ai_dir, "python" ), "python.exe" );
-        if ( FileExists( bundled ) )
+        if ( consider( bundled, "bundled:ai\\python" ) )
         {
             return bundled;
         }
+        const std::string venv = JoinPath( JoinPath( ai_dir, ".venv\\Scripts" ), "python.exe" );
+        if ( consider( venv, "venv:ai\\.venv" ) )
+        {
+            return venv;
+        }
     }
 
-    // Prefer Python 3.13 (the bundled OpenVSP Python extension _vsp.pyd is cp313).
-    // A generic "python.exe" on PATH may be a 3.11/venv interpreter that cannot
-    // load the extension (DLL load failed), so known 3.13 locations win.
+    // 3) Known 3.13 installations. 3.12 is kept as a candidate only so that the
+    //    probe can show a precise version error instead of silently using it.
     std::vector<std::string> known;
+    std::vector<std::string> known_sources;
     const std::string local = GetEnvUtf8( "LOCALAPPDATA" );
     const std::string program_files = GetEnvUtf8( "ProgramFiles" );
     const std::string program_files_x86 = GetEnvUtf8( "ProgramFiles(x86)" );
     if ( !local.empty() )
     {
         known.push_back( JoinPath( local, "Programs\\Python\\Python313\\python.exe" ) );
+        known_sources.push_back( "known:313" );
         known.push_back( JoinPath( local, "Programs\\Python\\Python312\\python.exe" ) );
+        known_sources.push_back( "known:312" );
     }
     if ( !program_files.empty() )
     {
         known.push_back( JoinPath( program_files, "Python313\\python.exe" ) );
+        known_sources.push_back( "known:313" );
         known.push_back( JoinPath( program_files, "Python312\\python.exe" ) );
+        known_sources.push_back( "known:312" );
     }
     if ( !program_files_x86.empty() )
     {
         known.push_back( JoinPath( program_files_x86, "Python313\\python.exe" ) );
+        known_sources.push_back( "known:313" );
     }
     known.push_back( "C:\\Python313\\python.exe" );
-    for ( const std::string& candidate : known )
+    known_sources.push_back( "known:313" );
+    for ( size_t i = 0; i < known.size(); ++i )
     {
-        if ( FileExists( candidate ) )
+        if ( consider( known[i], known_sources[i] ) )
         {
-            return candidate;
+            return known[i];
         }
     }
 
-    wchar_t found[MAX_PATH];
-    if ( SearchPathW( nullptr, L"python.exe", nullptr, MAX_PATH, found, nullptr ) > 0 )
+    // 4) Scan PATH manually. SearchPathW returns the first name match without
+    //    validating it, so it happily accepted the Store alias and returned 9009.
+    const std::string path_env = GetEnvUtf8( "PATH" );
+    size_t begin = 0;
+    while ( begin <= path_env.size() )
     {
-        return Narrow( found );
-    }
-    if ( SearchPathW( nullptr, L"python3.exe", nullptr, MAX_PATH, found, nullptr ) > 0 )
-    {
-        return Narrow( found );
+        size_t end_pos = path_env.find( ';', begin );
+        std::string directory = path_env.substr( begin, end_pos == std::string::npos
+            ? std::string::npos : end_pos - begin );
+        if ( !directory.empty() )
+        {
+            if ( directory.size() >= 2 && directory.front() == '"' && directory.back() == '"' )
+            {
+                directory = directory.substr( 1, directory.size() - 2 );
+            }
+            const std::string py = JoinPath( directory, "python.exe" );
+            if ( consider( py, "path" ) )
+            {
+                return py;
+            }
+            const std::string py3 = JoinPath( directory, "python3.exe" );
+            if ( consider( py3, "path" ) )
+            {
+                return py3;
+            }
+        }
+        if ( end_pos == std::string::npos )
+        {
+            break;
+        }
+        begin = end_pos + 1;
     }
     return std::string();
 }
@@ -1706,13 +2059,53 @@ void AIDesignWindow::StartDesign( bool ga_mode )
 
     if ( python.empty() )
     {
-        fl_alert( "未找到 Python 运行时。\n请设置环境变量 OPENVSP_AI_PYTHON，或将 Python 放入安装目录 ai\\python\\python.exe。" );
+        std::string message = "未找到可用的 Python 3.13 运行时。\n\n";
+        if ( !g_PythonLastRejected.empty() )
+        {
+            message += "检测到的 python.exe 不可用（可能是 Microsoft Store 占位别名）：\n  "
+                     + g_PythonLastRejected + "\n\n";
+        }
+        message += "请任选一种方式修复：\n"
+                   "  1) 安装 Python 3.13（64 位），安装时勾选 Add python.exe to PATH；\n"
+                   "  2) 设置环境变量 OPENVSP_AI_PYTHON 指向真实 python.exe；\n"
+                   "  3) 关闭 Windows 设置 → 应用 → 高级应用设置 → 应用执行别名中的 python.exe / python3.exe。\n\n"
+                   "如果使用 R2 安装包，请确认安装目录下存在 ai\\python\\python.exe（内置运行时）。\n"
+                   "安装依赖可运行安装目录下的 setup_ai_env.bat。";
+        AppendLog( "[error] " + message );
+        SetStatus( "未找到可用的 Python 3.13 运行时。", true );
+        fl_alert( "%s", message.c_str() );
         return;
     }
     if ( agent.empty() || !FileExists( agent ) )
     {
-        fl_alert( "未找到 AI 设计后端 ai_design_agent.py。\n请确认安装目录下存在 ai 文件夹，或设置 OPENVSP_AI_DIR。" );
+        const std::string message = "未找到 AI 设计后端 ai_design_agent.py。\n"
+                                    "请确认安装目录下存在 ai 文件夹，或设置 OPENVSP_AI_DIR。";
+        AppendLog( "[error] " + message );
+        SetStatus( "未找到 AI 设计后端。", true );
+        fl_alert( "%s", message.c_str() );
         return;
+    }
+
+    // 启动前做一次真实探测：拒绝 Store 别名、0 字节占位、3.12 解释器、
+    // 缺依赖等“看起来能启动但必定秒退”的环境。探测成功才创建 ai_job.json。
+    if ( !g_PythonProbePassed || g_ProbedPython != python )
+    {
+        SetStatus( "正在检查 Python 3.13 和 AI 依赖...", false );
+        AppendLog( "[status] 检查 Python 运行时: " + python
+                   + ( g_PythonSource.empty() ? "" : "（来源: " + g_PythonSource + "）" ) );
+        const std::string probe_error = ProbePython( python, ai_dir );
+        if ( !probe_error.empty() )
+        {
+            g_PythonProbePassed = false;
+            g_ProbedPython = python;
+            AppendLog( "[error] " + probe_error );
+            SetStatus( "Python 运行时检查失败。", true );
+            fl_alert( "%s", probe_error.c_str() );
+            return;
+        }
+        g_PythonProbePassed = true;
+        g_ProbedPython = python;
+        AppendLog( "[status] Python 3.13 和依赖检查通过。" );
     }
 
     const char* prompt = m_PromptInput->value();
@@ -1793,7 +2186,8 @@ void AIDesignWindow::StartDesign( bool ga_mode )
         AppendLog( "[status] 上传案例: " + BaseName( m_CasePath )
                    + "（将作为修改/优化基线）" );
     }
-    AppendLog( "         Python: " + python );
+    AppendLog( "         Python: " + python
+               + ( g_PythonSource.empty() ? "" : "（来源: " + g_PythonSource + "）" ) );
     AppendLog( "         Agent : " + agent );
     AppendLog( "         输出  : " + m_OutputDir );
     if ( ga_mode )
@@ -1996,6 +2390,14 @@ void AIDesignWindow::ProcessFinished( int exit_code )
         m_ReaderThread.join();
     }
 
+    if ( m_StopRequested.load() )
+    {
+        m_StopRequested = false;
+        SetStatus( "已停止 AI 设计进程。", false );
+        AppendLog( "[status] 用户已停止 AI 设计进程。" );
+        return;
+    }
+
     bool ok = false;
     if ( !m_OutputDir.empty() )
     {
@@ -2043,17 +2445,28 @@ void AIDesignWindow::ProcessFinished( int exit_code )
                    + ( was_ga
                            ? ( m_LastModelPath.empty() ? "(未返回路径)" : m_LastModelPath )
                            : ( m_ReportPath.empty() ? "(未返回路径)" : m_ReportPath ) ), false );
-        AppendLog( was_ga ? "[status] 遗传算法优化完成，可点击“导入OpenVSP”导入 OpenVSP 编辑，"
+        AppendLog( was_ga ? "[status] 遗传算法优化完成，可点击“导入OpenVSP”导入模型，"
                             "或“打开设计报告”查看 GA 报告。"
                          : "[status] 设计完成，可点击“打开设计报告”或“导入OpenVSP”编辑。" );
     }
     else if ( exit_code == 0 )
     {
-        SetStatus( "后端进程结束，但未读取到成功结果；请查看日志。", true );
+        SetStatus( "后端进程结束，但未读取到成功结果；请查看日志和 result.json。", true );
+        AppendLog( "[error] 后端进程 exit code 0，但 result.json 缺失或 ok!=true。输出目录: "
+                   + m_OutputDir );
     }
     else
     {
-        SetStatus( "后端进程异常退出（exit code " + std::to_string( exit_code ) + "）。", true );
+        const std::string reason = ExplainExitCode( exit_code );
+        SetStatus( "后端进程异常退出（exit code " + std::to_string( exit_code )
+                   + "：" + reason + "）。", true );
+        AppendLog( "[error] 后端进程异常退出（exit code " + std::to_string( exit_code )
+                   + "：" + reason + "）。" );
+        if ( !m_OutputDir.empty() )
+        {
+            AppendLog( "[error] 输出目录: " + m_OutputDir
+                       + "；若 result.json 不存在，通常是解释器或 ai_design_agent.py 没有真正启动。" );
+        }
     }
 }
 
