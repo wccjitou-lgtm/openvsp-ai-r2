@@ -1549,10 +1549,17 @@ class Designer:
                     value=item.get("value") if isinstance(item.get("value"), (int, float)) else None,
                     limit=(item.get("high") if isinstance(item.get("high"), (int, float)) else None),
                     unit=str(item.get("unit") or ""),
-                    hard=True,
-                    reason_code=None if status != "unknown" else "NO_EVIDENCE_OR_INCOMPLETE_DATA",
+                    hard=False,
+                    reason_code=None if status == "pass" else "ADVISORY_RULE",
                     note=str(item.get("note") or ""),
                 ))
+            criteria = metrics["design_criteria"]
+            metrics["design_advisories"] = {
+                "authority": "advisory",
+                "overall": criteria.get("overall"),
+                "summary": criteria.get("summary"),
+                "note": "经验准则仅辅助技术输入和 LLM/设计者决策，不是硬性合格判据。",
+            }
             metrics["design_decision"] = aggregate_constraints(
                 constraints, task_status="completed", approved_profile=False)
         except Exception as exc:
