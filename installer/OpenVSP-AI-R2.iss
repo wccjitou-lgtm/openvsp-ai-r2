@@ -74,6 +74,12 @@ function FindPython(): String;
 var
   P: String;
 begin
+  P := ExpandConstant('{app}\ai\python\python.exe');
+  if FileExists(P) then
+  begin
+    Result := P;
+    exit;
+  end;
   P := ExpandConstant('{app}\.venv\Scripts\python.exe');
   if FileExists(P) then
   begin
@@ -81,7 +87,7 @@ begin
     exit;
   end;
   P := FileSearch('python.exe', GetEnv('PATH'));
-  if P <> '' then
+  if (P <> '') and (Pos('\Microsoft\WindowsApps\', Lowercase(P)) = 0) then
     Result := P
   else
     Result := 'python';
