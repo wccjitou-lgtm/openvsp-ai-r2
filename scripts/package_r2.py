@@ -18,10 +18,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-R2 = Path(__file__).resolve().parents[1]
-SRC = Path(os.environ.get("OPENVSP_SRC", r"C:\OpenVSP-3.51.3-win64\work\OpenVSP-3.51.3-src"))
+R2 = Path(r"D:\Zcoding\OpenVSP-R2")
+SRC = Path(r"D:\Zcoding\OpenVSP-3.51.3-win64\work\OpenVSP-3.51.3-src")
 BASE_PAYLOAD = SRC / "work" / "windows-package" / "candidate03" / "payload"
-PY_API_SRC = Path(os.environ.get("OPENVSP_PYTHONPATH", r"C:\OpenVSP-3.51.3-win64\python"))
+PY_API_SRC = Path(r"D:\Zcoding\OpenVSP-3.51.3-win64\python")
 NEW_EXE = SRC / "build" / "vsp" / "src" / "vsp" / "Release" / "vsp.exe"
 DIST = R2 / "dist"
 STAGE = DIST / "OpenVSP-3.51.3-zh-CN-r2"
@@ -33,7 +33,7 @@ IGNORE = shutil.ignore_patterns(
     "__pycache__", "*.pyc", "*.pyo", "_scratch", ".pytest_cache",
     "*.pdb", "*.ilk", "*.obj", "*.lib", "*.exp",
     "offline_run", "*.log", "workspace", "*.tmp",
-    "runs", "pdf_pages", "opt_plan_pages",
+    "runs", "pdf_pages", "opt_plan_pages", "outputs", "data", "tests",
 )
 
 
@@ -203,7 +203,7 @@ README_R2 = """OpenVSP 3.51.3-zh-CN R2（便携版）
   首次使用可双击 setup_ai_env.bat 安装依赖（numpy / python-docx / matplotlib）。
   需要 Python 3.13.x（随包 OpenVSP Python API 为 cp313 构建）；
   也可临时设置环境变量 OPENVSP_AI_PYTHON 指向 Python 3.13 的 python.exe。
-  本便携包已包含 OpenVSP Python API（python\openvsp，不含 vspaero.exe 副本）。
+  本便携包已包含 OpenVSP Python API（python\openvsp，不含 vspaero.exe 副本）和内置 Python 3.13。
 
 四、无 Key / 离线
   未填写 API Key 时选择“离线运行”，使用内置规则设计流程，仍可生成模型、VSPAERO 结果与报告。
@@ -223,28 +223,39 @@ chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
 echo ============================================
-echo  OpenVSP AI R2 AI 后端依赖安装
+echo  OpenVSP AI R2 AI 后端环境检查
 echo ============================================
-where python >nul 2>nul
-if errorlevel 1 (
-  echo [错误] 未找到 python.exe，请安装 Python 3.13 并加入 PATH。
+set "PYTHON=%~dp0ai\python\python.exe"
+if exist "%PYTHON%" goto verify
+for /f "delims=" %%P in ('where python 2^>nul') do if not defined PYTHON set "PYTHON=%%P"
+if not defined PYTHON (
+  echo [错误] 未找到 python.exe，也未找到内置运行时 ai\python\python.exe。
+  echo        请安装 Python 3.13（64 位，勾选 Add python.exe to PATH），
+  echo        或设置环境变量 OPENVSP_AI_PYTHON 指向真实 python.exe。
   pause
   exit /b 1
 )
-python -c "import sys; sys.exit(0 if sys.version_info[:2]==(3,13) else 1)" >nul 2>nul
+:verify
+echo 使用解释器: "%PYTHON%"
+"%PYTHON%" -c "import sys; sys.exit(0 if sys.version_info[:2]==(3,13) else 1)" >nul 2>nul
 if errorlevel 1 (
-  echo [警告] 当前 Python 不是 3.13；随包 OpenVSP Python API 为 cp313，可能无法导入。
-  echo        请安装 Python 3.13 或设置 OPENVSP_AI_PYTHON 指向 3.13。
-)
-python -m pip install --upgrade pip
-python -m pip install -r "%~dp0ai\\requirements.txt"
-if errorlevel 1 (
-  echo [错误] 依赖安装失败，请检查网络/代理。
+  echo [错误] 该解释器不是可运行的 Python 3.13，可能是 Microsoft Store 占位别名。
+  echo        请安装 Python 3.13，或设置 OPENVSP_AI_PYTHON。
   pause
   exit /b 1
+)
+"%PYTHON%" -c "import numpy, docx, matplotlib, pypdf, openpyxl, six" >nul 2>nul
+if errorlevel 1 (
+  echo 正在安装 AI 依赖...
+  "%PYTHON%" -m pip install -r "%~dp0ai\requirements.txt"
+  if errorlevel 1 (
+    echo [错误] 依赖安装失败，请检查网络/代理。
+    pause
+    exit /b 1
+  )
 )
 echo.
-echo 依赖安装完成。现在可以启动 vsp.exe 使用 AI 设计模块。
+echo AI 后端环境可用。现在可以启动 vsp.exe 使用 AI 设计模块。
 pause
 """
 
