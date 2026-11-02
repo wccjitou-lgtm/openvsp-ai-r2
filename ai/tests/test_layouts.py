@@ -26,3 +26,23 @@ def test_tandem_rear_wing_is_trimmed():
     assert geometry["tandem_wing"]["root_y_m"] > 0
     assert geometry["tandem_wing"]["exposed_area_m2"] < geometry["tandem_wing"]["full_area_m2"]
     assert geometry["tandem_wing"]["x_le_m"] > geometry["wing"]["x_le_m"]
+
+
+def test_twin_vertical_tail_is_parsed_and_built_as_two_fins():
+    from ai_design.designer import DesignSpec, parse_requirements, size_aircraft
+    prompt = ("设计一架常规布局无人机，最大起飞重量50 kg，海拔1000 m，"
+              "巡航速度25 m/s，尾翼为平尾+双垂尾，电动机")
+    spec = parse_requirements(prompt)
+    assert spec.configuration == "conventional"
+    assert spec.twin_vtail is True
+    geometry = size_aircraft(spec)
+    assert geometry["htail"]["name"] == "HTail"
+    assert geometry["vtail_conventional"]["name"] == "VTailL"
+    assert geometry["vtail_right"]["name"] == "VTailR"
+    assert geometry["vtail_conventional"]["y_offset_m"] < 0
+    assert geometry["vtail_right"]["y_offset_m"] > 0
+    comps = {c["component"] for c in geometry["control_surfaces"]}
+    assert {"VTailL", "VTailR"}.issubset(comps)
+    control_names = {(c.get("component"), c.get("name")) for c in geometry["control_surfaces"]}
+    assert ("VTailL", "RudderL") in control_names
+    assert ("VTailR", "RudderR") in control_names
