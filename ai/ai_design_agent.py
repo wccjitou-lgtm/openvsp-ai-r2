@@ -101,6 +101,9 @@ def write_result(output_dir: Path, result: dict) -> Path:
         "case_applied": result.get("case_applied"),
         # GA 优化任务（task=ga）专用字段
         "task": result.get("task") or "design",
+        "modify": bool(result.get("modify")),
+        "parent_model": result.get("parent_model"),
+        "parent_result": result.get("parent_result"),
         "baseline": result.get("baseline"),
         "best": result.get("best"),
         "history": result.get("history"),
