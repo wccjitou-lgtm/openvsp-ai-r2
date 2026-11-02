@@ -91,6 +91,10 @@ python aii_design_agent.py --offline --config examples\offline_config.json
 
 - `后端进程异常退出（exit code 9009）`：旧版会命中 Microsoft Store 的 python.exe 占位别名。最新版安装包内置 Python 3.13，并在启动前校验解释器和依赖；详见 `docs/18-AI后端9009启动失败-问题分析与修复.md`。
 
+## 继续修改当前设计
+
+第一轮设计完成后，在需求文本框填写修改要求，点击 **修改当前设计**。GUI 会把当前 vsp3 作为 `case_model`，同时传递 `parent_model` / `parent_result`，LLM 只修改点名参数并重新分析、出报告。详见 `docs/19-自然语言迭代修改当前设计.md`。
+
 ## MCP
 
 GUI 中的 **MCP调用** 按钮只显示一段可直接复制给 Agent / Harness 的提示词，不再展示安装教程或目录操作。
