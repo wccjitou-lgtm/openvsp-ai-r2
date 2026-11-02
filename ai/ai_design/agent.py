@@ -277,6 +277,26 @@ class DesignAgent:
         ]
         return "\n".join(lines)
 
+    def _modify_prompt_block(self) -> str:
+        """第二轮/后续修改任务的上下文，强调只改用户点名内容。"""
+        if self.config.task != "modify":
+            return ""
+        lines = [
+            "【当前设计修改任务】",
+            "这不是从零开始的新设计。请基于当前 vsp3 模型和已有结果继续修改。",
+        ]
+        if self.config.parent_model:
+            lines.append(f"当前模型: {self.config.parent_model}")
+        if self.config.parent_result:
+            lines.append(f"上一轮结果: {self.config.parent_result}")
+        lines.extend([
+            "只修改用户在本次输入中明确要求的内容；不要重置或覆盖其他已有参数。",
+            "修改后必须重新运行 VSPAERO、静稳定检查和报告生成。",
+            "如需改参数，优先调用 openvsp_modify_parameter；"
+            "如必须重建整机，使用 openvsp_build_aircraft 并说明哪些参数来自上一轮。",
+        ])
+        return "\n".join(lines)
+
     def _build_llm_user_content(self, prompt: str) -> str:
         """LLM user 消息：自然语言需求 + 案例基线 + 附件文档（技术数据非指令）。"""
         parts: list[str] = [prompt]
@@ -285,6 +305,9 @@ class DesignAgent:
             parts.append(case_block)
             self.logger.status(
                 "需求融合: 已注入上传案例 .vsp3 基线参数（要求基于案例修改/优化）")
+        modify_block = self._modify_prompt_block()
+        if modify_block:
+            parts.append(modify_block)
         bundle = self.attachment_bundle
         if bundle and bundle.has_text:
             block = format_attachments_block(
@@ -320,6 +343,11 @@ class DesignAgent:
                 "\n\n本次用户上传了现有 .vsp3 案例，其参数已在 user 消息中给出；"
                 "必须基于该案例修改/优化（只改用户明确要求的参数，其余沿用案例），"
                 "不要忽略案例从零开始设计。")
+        if self.config.task == "modify":
+            system_content += (
+                "\n\n这是基于当前设计的继续修改任务。必须先读取当前模型参数；"
+                "只修改用户本次点名要求的内容，其他参数保持上一轮结果；"
+                "修改后重新运行 VSPAERO、静稳定检查和报告生成。")
         self.messages = [
             {"role": "system", "content": system_content},
             {"role": "user", "content": user_content},
@@ -448,6 +476,9 @@ class DesignAgent:
         case_parameters = (result.get("case_parameters")
                            or case_info.get("case_parameters"))
         result["case_model"] = case_model
+        result["parent_model"] = getattr(self.config, "parent_model", "") or None
+        result["parent_result"] = getattr(self.config, "parent_result", "") or None
+        result["modify"] = (self.config.task == "modify")
         result["based_on_case"] = based_on_case
         result["case_parameters"] = case_parameters
         result["case_applied"] = (case_info.get("case_applied")
