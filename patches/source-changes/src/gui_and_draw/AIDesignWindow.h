@@ -54,7 +54,8 @@ protected:
     void LoadSettings();
     void SaveSettings() const;
 
-    std::string BuildConfigJson( const std::string& output_dir, bool ga_mode ) const;
+    std::string BuildConfigJson( const std::string& output_dir, bool ga_mode,
+                                 bool modify_mode = false ) const;
     std::string ResolveAIDir() const;
     std::string ResolvePython() const;
     std::string ResolveAgentScript() const;
@@ -73,7 +74,7 @@ protected:
     void StartVerifyKey();
     std::string CurrentProviderId() const;
     void RefreshAttachmentList();
-    void StartDesign( bool ga_mode );
+    void StartDesign( bool ga_mode, bool modify_mode = false );
     void ImportCurrentModel();
     void StopDesign();
     void OpenReport();
@@ -95,6 +96,7 @@ protected:
     static void PostVerifyCB( void* data );
     static void StartCB( Fl_Widget* w, void* data );
     static void GACB( Fl_Widget* w, void* data );
+    static void ModifyCB( Fl_Widget* w, void* data );
     static void ImportModelCB( Fl_Widget* w, void* data );
     static void StopCB( Fl_Widget* w, void* data );
     static void OpenCB( Fl_Widget* w, void* data );
@@ -124,6 +126,7 @@ protected:
     Fl_Box* m_StatusBox = nullptr;
     Fl_Button* m_StartButton = nullptr;
     Fl_Button* m_GAButton = nullptr;
+    Fl_Button* m_ModifyButton = nullptr;
     Fl_Button* m_ImportModelButton = nullptr;
     Fl_Button* m_StopButton = nullptr;
     Fl_Button* m_OpenButton = nullptr;
@@ -134,6 +137,7 @@ protected:
     std::string m_OutputDir;
     std::string m_LastModelPath;
     std::string m_LastTask;
+    std::string m_LastResultPath;
     std::vector<std::string> m_Attachments;
     std::string m_CasePath;
     // provider id -> plaintext key, kept only in memory; persisted only as DPAPI blobs.
