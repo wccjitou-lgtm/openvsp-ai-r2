@@ -595,8 +595,20 @@ def _geometry_table(design: dict[str, Any], geometry: dict[str, Any],
                              (tandem.get("span_m") or 0), 3), "m²")
         add("后翼展长", _num(tandem.get("span_m"), 3), "m")
     vtail_conv = _as_dict(geometry.get("vtail_conventional"))
+    vtail_right = _as_dict(geometry.get("vtail_right"))
     if vtail_conv:
-        add("垂尾面积", _num(vtail_conv.get("area_m2"), 3), "m²")
+        left_area = _num(vtail_conv.get("area_m2"), 3)
+        left_raw = vtail_conv.get("area_m2")
+        right_raw = vtail_right.get("area_m2") if vtail_right else None
+        if vtail_right:
+            total_raw = ((float(left_raw) if _is_number(left_raw) else 0.0) +
+                         (float(right_raw) if _is_number(right_raw) else 0.0))
+            total_area = _num(total_raw, 3) if total_raw else left_area
+        else:
+            total_area = left_area
+        add("垂尾布局", "双垂尾" if vtail_right else "单垂尾", "")
+        add("垂尾总面积", _num(total_area, 3) if total_area is not None else None, "m²")
+        add("单片垂尾面积", left_area, "m²")
         add("垂尾展长", _num(vtail_conv.get("span_m"), 3), "m")
         add("垂尾容量系数 Vv", _num(vtail_conv.get("volume_coeff"), 4), "—")
         add("垂尾容量目标", _num(vtail_conv.get("volume_target"), 4), "—")
