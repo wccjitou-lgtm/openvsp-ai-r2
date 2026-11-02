@@ -1,11 +1,11 @@
 # AI 设计后端依赖（仅标准库 + 少量科学计算库）
 #
 # Python: 3.10+（实测 3.13.3）
-# 安装:  <USER_HOME>\AppData\Local\Programs\Python\Python313\python.exe -m pip install -r requirements.txt
+# 安装:  C:\Users\Lenovo\AppData\Local\Programs\Python\Python313\python.exe -m pip install -r requirements.txt
 #
 # 说明：
 # - 不依赖 openai SDK；LLM 调用使用标准库 urllib 实现（OpenAI 兼容协议）。
-# - OpenVSP Python API 来自 OpenVSP 安装目录（<OPENVSP_ROOT>\python\...），
+# - OpenVSP Python API 来自 OpenVSP 安装目录（D:\Zcoding\OpenVSP-3.51.3-win64\python\...），
 #   无需 pip 安装。
 # - pytest 仅用于测试，可选。
 
@@ -16,6 +16,7 @@ matplotlib>=3.7
 
 # 上传文档解析（附件）
 pypdf>=4.0
+six>=1.16
 openpyxl>=3.1
 # 可选回退：PDF 解析也可用 pdfplumber / PyMuPDF(fitz)，旧版 .xls 需 xlrd
 # pdfplumber>=0.11
