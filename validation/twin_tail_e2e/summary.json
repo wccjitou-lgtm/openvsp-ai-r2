@@ -1,0 +1,101 @@
+{
+  "ok": true,
+  "report": "D:\\Zcoding\\OpenVSP-R2\\validation\\twin_tail_e2e\\design_report_20261102_163639.docx",
+  "spec": {
+    "configuration": "conventional",
+    "twin_vtail": true
+  },
+  "components": [
+    {
+      "name": "Fuselage",
+      "role": "fuselage"
+    },
+    {
+      "name": "MainWing",
+      "role": "wing"
+    },
+    {
+      "name": "HTail",
+      "role": "htail"
+    },
+    {
+      "name": "VTailL",
+      "role": "vtail"
+    },
+    {
+      "name": "VTailR",
+      "role": "vtail"
+    }
+  ],
+  "vtail": {
+    "name": "VTailL",
+    "span_m": 1.2984,
+    "root_chord_m": 0.8431,
+    "tip_chord_m": 0.3372,
+    "x_le_m": 2.2191,
+    "z_m": 0.0,
+    "y_offset_m": -0.478,
+    "sweep_deg": 30.0,
+    "airfoil": "NACA0012",
+    "area_m2": 0.76625,
+    "single_volume_coeff": 0.20705,
+    "volume_coeff": 0.41409,
+    "volume_target": 0.40258
+  },
+  "vtail_right": {
+    "name": "VTailR",
+    "span_m": 1.2984,
+    "root_chord_m": 0.8431,
+    "tip_chord_m": 0.3372,
+    "x_le_m": 2.2191,
+    "z_m": 0.0,
+    "y_offset_m": 0.478,
+    "sweep_deg": 30.0,
+    "airfoil": "NACA0012",
+    "area_m2": 0.76625,
+    "single_volume_coeff": 0.20705,
+    "volume_coeff": 0.41409,
+    "volume_target": 0.40258
+  },
+  "controls": [
+    {
+      "component": "wing",
+      "name": "Aileron",
+      "u_start": 0.55,
+      "u_end": 0.95,
+      "chord_fraction": 0.22
+    },
+    {
+      "component": "htail",
+      "name": "Elevator",
+      "u_start": 0.0,
+      "u_end": 1.0,
+      "chord_fraction": 0.3
+    },
+    {
+      "component": "VTailL",
+      "name": "RudderL",
+      "u_start": 0.0,
+      "u_end": 1.0,
+      "chord_fraction": 0.3
+    },
+    {
+      "component": "VTailR",
+      "name": "RudderR",
+      "u_start": 0.0,
+      "u_end": 1.0,
+      "chord_fraction": 0.3
+    }
+  ],
+  "totals": {
+    "component_count": 5,
+    "span_m": 3.6,
+    "wing_area_m2": 1.3084,
+    "tail_area_m2": 1.6453,
+    "fuselage_length_m": 3.1088,
+    "fuselage_max_diameter_m": 0.4052,
+    "wing_mac_m": 0.4182,
+    "aspect_ratio": 9.9052,
+    "sweep_deg": 0.0
+  }
+}
