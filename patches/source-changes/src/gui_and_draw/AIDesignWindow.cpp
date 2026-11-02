@@ -1674,7 +1674,13 @@ void AIDesignWindow::BuildWidgets()
     m_CloseButton = new Fl_Button( 825, 536, 100, 28, "关闭" );
     m_CloseButton->callback( CloseCB, this );
 
-    Fl_Box* footer = new Fl_Box( 15, 572, 910, 70,
+
+
+    m_ModifyButton = new Fl_Button( 15, 572, 180, 28, "修改当前设计" );
+    m_ModifyButton->callback( ModifyCB, this );
+    m_ModifyButton->tooltip( "第一轮设计完成后，在需求文本框填写修改要求，基于当前 vsp3 继续优化" );
+    m_ModifyButton->deactivate();
+    Fl_Box* footer = new Fl_Box( 205, 572, 720, 70,
         "工作流程：读取需求/上传文档 → 调用大模型规划（或离线规则设计）→ 驱动 OpenVSP 建模 → "
         "VSPAERO 气动计算 → 自动优化/遗传算法优化 → 按内置模板生成 Word 设计报告。\n"
         "上传的 Word/PDF/Excel/TXT 等文档由 AI 后端解析，提取技术参数、设计输入与设备选型，"
@@ -1906,7 +1912,7 @@ std::string AIDesignWindow::MakeOutputDir() const
     return dir;
 }
 
-std::string AIDesignWindow::BuildConfigJson( const std::string& output_dir, bool ga_mode ) const
+std::string AIDesignWindow::BuildConfigJson( const std::string& output_dir, bool ga_mode, bool modify_mode ) const
 {
     const int provider_index = m_ProviderChoice->value();
     const ProviderPreset& preset = kProviders[provider_index];
@@ -1928,7 +1934,15 @@ std::string AIDesignWindow::BuildConfigJson( const std::string& output_dir, bool
 
     std::ostringstream stream;
     stream << "{\n";
-    stream << "  \"task\": \"" << ( ga_mode ? "ga" : "design" ) << "\",\n";
+    stream << "  \"task\": \"" << ( ga_mode ? "ga" : ( modify_mode ? "modify" : "design" ) ) << "\",\n";
+    if ( modify_mode )
+    {
+        stream << "  \"modify\": true,\n";
+        stream << "  \"parent_model\": \"" << JsonEscape( m_LastModelPath ) << "\",\n";
+        if ( !m_LastResultPath.empty() ) {
+            stream << "  \"parent_result\": \"" << JsonEscape( m_LastResultPath ) << "\",\n";
+        }
+    }
     if ( ga_mode )
     {
         stream << "  \"ga\": { \"population\": 8, \"generations\": 4, "
@@ -1956,7 +1970,11 @@ std::string AIDesignWindow::BuildConfigJson( const std::string& output_dir, bool
         stream << "\"" << JsonEscape( m_Attachments[i] ) << "\"";
     }
     stream << "],\n";
-    if ( !m_CasePath.empty() && FileExists( m_CasePath ) )
+    if ( modify_mode && !m_LastModelPath.empty() && FileExists( m_LastModelPath ) )
+    {
+        stream << "  \"case_model\": \"" << JsonEscape( m_LastModelPath ) << "\",\n";
+    }
+    else if ( !m_CasePath.empty() && FileExists( m_CasePath ) )
     {
         stream << "  \"case_model\": \"" << JsonEscape( m_CasePath ) << "\",\n";
     }
@@ -2047,7 +2065,7 @@ void AIDesignWindow::FetchModels()
     }
 }
 
-void AIDesignWindow::StartDesign( bool ga_mode )
+void AIDesignWindow::StartDesign( bool ga_mode, bool modify_mode )
 {
     if ( m_Running.load() )
     {
@@ -2108,6 +2126,21 @@ void AIDesignWindow::StartDesign( bool ga_mode )
         AppendLog( "[status] Python 3.13 和依赖检查通过。" );
     }
 
+    if ( modify_mode )
+    {
+        if ( m_LastModelPath.empty() || !FileExists( m_LastModelPath ) )
+        {
+            fl_alert( "当前还没有可修改的设计模型，请先完成第一轮设计。" );
+            return;
+        }
+        const char* edit = m_PromptInput->value();
+        if ( !edit || std::strlen( Trim( edit ).c_str() ) < 3 )
+        {
+            fl_alert( "请在需求文本框中填写要修改的内容，例如：把翼展改为 3.5 m，并重新校核静稳定。" );
+            return;
+        }
+    }
+
     const char* prompt = m_PromptInput->value();
     if ( ( !prompt || std::strlen( prompt ) < 5 )
          && m_Attachments.empty() && m_CasePath.empty() )
@@ -2133,7 +2166,7 @@ void AIDesignWindow::StartDesign( bool ga_mode )
     SaveSettings();
     m_OutputDir = MakeOutputDir();
     const std::string config_path = JoinPath( m_OutputDir, "ai_job.json" );
-    const std::string config = BuildConfigJson( m_OutputDir, ga_mode );
+    const std::string config = BuildConfigJson( m_OutputDir, ga_mode, modify_mode );
     std::ofstream out( Widen( config_path ), std::ios::binary );
     if ( !out )
     {
@@ -2159,11 +2192,12 @@ void AIDesignWindow::StartDesign( bool ga_mode )
     }
 
     m_ReportPath.clear();
-    m_LastTask = ga_mode ? "ga" : "design";
+    m_LastTask = ga_mode ? "ga" : ( modify_mode ? "modify" : "design" );
     m_LogBuffer->text( "" );
     m_OpenButton->deactivate();
     m_StartButton->deactivate();
     m_GAButton->deactivate();
+    if ( m_ModifyButton ) m_ModifyButton->deactivate();
     m_ImportModelButton->deactivate();
     m_StopButton->activate();
     m_Running = true;
@@ -2433,9 +2467,14 @@ void AIDesignWindow::ProcessFinished( int exit_code )
     {
         m_LastModelPath = FindNewestVsp3( m_OutputDir );
     }
+    if ( !m_OutputDir.empty() )
+    {
+        m_LastResultPath = JoinPath( m_OutputDir, "result.json" );
+    }
     if ( !m_LastModelPath.empty() && FileExists( m_LastModelPath ) )
     {
         m_ImportModelButton->activate();
+        if ( m_ModifyButton ) m_ModifyButton->activate();
     }
 
     if ( ok )
@@ -2785,6 +2824,15 @@ void AIDesignWindow::GACB( Fl_Widget*, void* data )
     if ( window )
     {
         window->StartDesign( true );
+    }
+}
+
+void AIDesignWindow::ModifyCB( Fl_Widget*, void* data )
+{
+    AIDesignWindow* window = static_cast<AIDesignWindow*>( data );
+    if ( window )
+    {
+        window->StartDesign( false, true );
     }
 }
 
