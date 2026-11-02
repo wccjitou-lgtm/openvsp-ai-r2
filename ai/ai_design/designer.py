@@ -35,7 +35,11 @@ _CONFIG_KEYWORDS = (
     ("canard", ("鸭翼", "鸭式", "canard")),
     ("tandem", ("串列翼", "串列", "tandem")),
     ("vtail", ("v 尾", "v尾", "v-tail", "v tail", "v 型尾", "v型尾", "v尾翼")),
-    ("conventional", ("常规尾", "常规布局", "t 尾", "t尾", "水平尾翼", "conventional")),
+    ("conventional", ("常规尾", "常规布局", "平尾", "水平尾翼", "t 尾", "t尾", "双垂尾", "双立尾", "conventional")),
+)
+_TWIN_VTAIL_KEYWORDS = (
+    "双垂尾", "双垂直尾翼", "双立尾", "两片垂尾", "双垂",
+    "twin vertical tail", "twin vtail", "two vertical tails",
 )
 _ENGINE_KEYWORDS = (
     ("electric", ("电动", "电机", "锂电池", "electric", "e-vtol", "电池")),
@@ -91,6 +95,7 @@ class DesignSpec:
     #: 案例基线：尾翼面积缩放（apply_case_baseline 按案例尾翼/机翼面积比设置）
     tail_scale_h: float = 1.0
     tail_scale_v: float = 1.0
+    twin_vtail: bool = False
     max_ar: float = 16.0
     assumptions: list[str] = field(default_factory=list)
     sources: dict[str, str] = field(default_factory=dict)
@@ -119,6 +124,7 @@ class DesignSpec:
             "tail_dihedral_deg": self.tail_dihedral_deg,
             "tail_volume_h": self.tail_volume_h,
             "tail_volume_v": self.tail_volume_v,
+            "twin_vtail": self.twin_vtail,
             "max_span_m": self.max_span_m,
             "stall_speed_max_ms": self.stall_speed_max_ms,
             "min_operating_speed_ms": self.min_operating_speed_ms,
@@ -179,6 +185,13 @@ def parse_requirements(prompt: str) -> DesignSpec:
             found["configuration"] = f"关键词「{keywords[0]}」"
             break
     set_value("configuration", configuration, found.get("configuration", "默认常规布局"))
+
+    # 平尾+双垂尾：配置仍是常规布局，但垂尾数量是独立选择。
+    lower_text = text.lower()
+    if any(keyword in lower_text for keyword in _TWIN_VTAIL_KEYWORDS):
+        spec.twin_vtail = True
+        found["twin_vtail"] = "双垂尾关键词"
+        spec.assumptions.append("识别到双垂尾需求，将生成左右两片垂直尾翼")
 
     # ---- 发动机 ----------------------------------------------------------
     engine = "electric"
@@ -397,6 +410,14 @@ def _tail_area(component: dict[str, Any] | None) -> float:
     tip = float(component.get("tip_chord_m", 0.0) or 0.0)
     span = float(component.get("span_m", 0.0) or 0.0)
     return 0.5 * (root + tip) * span
+
+
+def _vtail_area_total(geometry: dict[str, Any]) -> float:
+    """平尾+单/双垂尾：返回全部垂尾面积（V 尾按总面积字段）。"""
+    total = _tail_area(geometry.get("vtail"))
+    total += _tail_area(geometry.get("vtail_conventional"))
+    total += _tail_area(geometry.get("vtail_right"))
+    return total
 
 
 def _trim_root_panels(geometry: dict[str, Any], spec: Any,
@@ -702,9 +723,11 @@ def size_aircraft(spec: DesignSpec, optimization: dict[str, Any] | None = None) 
         htail_root = 2.0 * htail_equivalent_area / (htail_span * (1.0 + htail_taper))
         htail_tip = htail_root * htail_taper
         vtail_ar = 2.2
-        vtail_span = math.sqrt(vtail_ar * vtail_equivalent_area)
+        twin_vtail = bool(getattr(spec, "twin_vtail", False))
+        vtail_area_each = vtail_equivalent_area / (2.0 if twin_vtail else 1.0)
+        vtail_span = math.sqrt(vtail_ar * vtail_area_each)
         vtail_taper = 0.40
-        vtail_root = 2.0 * vtail_equivalent_area / (vtail_span * (1.0 + vtail_taper))
+        vtail_root = 2.0 * vtail_area_each / (vtail_span * (1.0 + vtail_taper))
         vtail_tip = vtail_root * vtail_taper
         x_htail_le = min(max(x_wing_le + 0.55 * fuselage_length,
                              fuselage_length - htail_root - 0.02 * fuselage_length),
@@ -722,50 +745,90 @@ def size_aircraft(spec: DesignSpec, optimization: dict[str, Any] | None = None) 
             "sweep_deg": 12.0,
             "airfoil": "NACA0012",
         }
+        vtail_z = round(max(
+            radius_at_x(geometry["fuselage"], x_vtail_le),
+            radius_at_x(geometry["fuselage"], x_vtail_le + vtail_root),
+            radius_at_x(geometry["fuselage"], x_vtail_le + 0.5 * vtail_root)) + 0.006, 4)
+        vtail_name = "VTailL" if twin_vtail else "VTail"
+        vtail_left_y = 0.0
+        if twin_vtail:
+            # 双垂尾装在平尾两端，左右各一片；每片面积为目标垂尾总面积的一半。
+            vtail_left_y = -0.5 * htail_span
+            vtail_z = 0.0
         geometry["vtail_conventional"] = {
-            "name": "VTail",
+            "name": vtail_name,
             "span_m": round(vtail_span, 4),
             "root_chord_m": round(vtail_root, 4),
             "tip_chord_m": round(vtail_tip, 4),
             "x_le_m": round(x_vtail_le, 4),
-            "z_m": round(max(
-                radius_at_x(geometry["fuselage"], x_vtail_le),
-                radius_at_x(geometry["fuselage"], x_vtail_le + vtail_root),
-                radius_at_x(geometry["fuselage"], x_vtail_le + 0.5 * vtail_root)) + 0.006, 4),
+            "z_m": vtail_z,
+            "y_offset_m": round(vtail_left_y, 4),
             "sweep_deg": 30.0,
             "airfoil": "NACA0012",
         }
-        # ---- 垂尾容量校核：按实际尾臂把 Vv 修正到目标值 ----
+        if twin_vtail:
+            geometry["vtail_right"] = {
+                "name": "VTailR",
+                "span_m": round(vtail_span, 4),
+                "root_chord_m": round(vtail_root, 4),
+                "tip_chord_m": round(vtail_tip, 4),
+                "x_le_m": round(x_vtail_le, 4),
+                "z_m": vtail_z,
+                "y_offset_m": round(0.5 * htail_span, 4),
+                "sweep_deg": 30.0,
+                "airfoil": "NACA0012",
+            }
+        # ---- 垂尾容量校核：按实际尾臂投影 Vv 修正到目标值 ----
         vtc = geometry.get("vtail_conventional")
         if vtc:
-            area_v = 0.5 * (float(vtc["root_chord_m"]) + float(vtc["tip_chord_m"])) * float(vtc["span_m"])
+            vt_right = geometry.get("vtail_right")
+            vtail_parts = [vtc] + ([vt_right] if vt_right else [])
+            area_v_each = 0.5 * (float(vtc["root_chord_m"]) + float(vtc["tip_chord_m"])) * float(vtc["span_m"])
+            for part in vtail_parts:
+                part["area_m2"] = round(0.5 * (float(part["root_chord_m"]) + float(part["tip_chord_m"])) * float(part["span_m"]), 5)
             lv = max((float(vtc["x_le_m"]) + 0.25 * float(vtc["root_chord_m"])) -
                      (x_wing_le + 0.25 * mac), 0.05)
-            actual_vv = area_v * lv / max(area * span, 1e-9)
+            actual_vv = area_v_each * len(vtail_parts) * lv / max(area * span, 1e-9)
             target_vv = vv * tail_scale * spec.tail_scale_v
             if actual_vv > 0 and target_vv > 0 and (actual_vv / target_vv > 1.08 or actual_vv / target_vv < 0.92):
                 scale = _clamp(math.sqrt(target_vv / actual_vv), 0.75, 1.25)
-                vtc["span_m"] = round(float(vtc["span_m"]) * scale, 4)
-                vtc["root_chord_m"] = round(float(vtc["root_chord_m"]) * scale, 4)
-                vtc["tip_chord_m"] = round(float(vtc["tip_chord_m"]) * scale, 4)
-                vtc["area_m2"] = round(0.5 * (vtc["root_chord_m"] + vtc["tip_chord_m"]) * vtc["span_m"], 5)
-                vtc["z_m"] = round(max(
-                    radius_at_x(geometry["fuselage"], vtc["x_le_m"]),
-                    radius_at_x(geometry["fuselage"], vtc["x_le_m"] + vtc["root_chord_m"])) + 0.006, 4)
-                area_v = vtc["area_m2"]
-            vtc["volume_coeff"] = round(area_v * lv / max(area * span, 1e-9), 5)
-            vtc["volume_target"] = round(target_vv, 5)
-            geometry["sizing"]["vtail_volume_coeff"] = vtc["volume_coeff"]
-            geometry["sizing"]["vtail_volume_target"] = vtc["volume_target"]
+                for part in vtail_parts:
+                    part["span_m"] = round(float(part["span_m"]) * scale, 4)
+                    part["root_chord_m"] = round(float(part["root_chord_m"]) * scale, 4)
+                    part["tip_chord_m"] = round(float(part["tip_chord_m"]) * scale, 4)
+                    part["area_m2"] = round(0.5 * (float(part["root_chord_m"]) + float(part["tip_chord_m"])) * float(part["span_m"]), 5)
+                    part["z_m"] = round(max(
+                        radius_at_x(geometry["fuselage"], float(part["x_le_m"])),
+                        radius_at_x(geometry["fuselage"], float(part["x_le_m"]) + float(part["root_chord_m"]))) + 0.006, 4) if not twin_vtail else 0.0
+                area_v_each = float(vtc.get("area_m2", area_v_each))
+            total_area_v = area_v_each * len(vtail_parts)
+            total_volume_coeff = total_area_v * lv / max(area * span, 1e-9)
+            for part in vtail_parts:
+                part["single_volume_coeff"] = round(area_v_each * lv / max(area * span, 1e-9), 5)
+                part["volume_coeff"] = round(total_volume_coeff, 5)
+                part["volume_target"] = round(target_vv, 5)
+            geometry["sizing"]["vtail_volume_coeff"] = round(total_volume_coeff, 5)
+            geometry["sizing"]["vtail_volume_target"] = round(target_vv, 5)
+            geometry["sizing"]["vtail_total_area_m2"] = round(total_area_v, 5)
+            geometry["sizing"]["twin_vtail"] = twin_vtail
 
         geometry["control_surfaces"] = [
             {"component": "wing", "name": "Aileron", "u_start": 0.55, "u_end": 0.95,
              "chord_fraction": 0.22},
             {"component": "htail", "name": "Elevator", "u_start": 0.0, "u_end": 1.0,
              "chord_fraction": 0.30},
-            {"component": "vtail", "name": "Rudder", "u_start": 0.0, "u_end": 1.0,
-             "chord_fraction": 0.30},
         ]
+        if twin_vtail:
+            geometry["control_surfaces"].extend([
+                {"component": "VTailL", "name": "RudderL", "u_start": 0.0, "u_end": 1.0,
+                 "chord_fraction": 0.30},
+                {"component": "VTailR", "name": "RudderR", "u_start": 0.0, "u_end": 1.0,
+                 "chord_fraction": 0.30},
+            ])
+        else:
+            geometry["control_surfaces"].append(
+                {"component": "vtail", "name": "Rudder", "u_start": 0.0, "u_end": 1.0,
+                 "chord_fraction": 0.30})
         tail_area_total = htail_equivalent_area + vtail_equivalent_area
 
     # ---- 重心初值（稳定性求解后再按目标裕度移动） -----------------------
@@ -804,8 +867,7 @@ def size_aircraft(spec: DesignSpec, optimization: dict[str, Any] | None = None) 
             {"component": "vtail", "name": "Rudder", "u_start": 0.0, "u_end": 1.0,
              "chord_fraction": 0.30},
         ]
-        vtail_geom = geometry.get("vtail_conventional") or {}
-        vtail_area = _tail_area(vtail_geom) if vtail_geom else 0.0
+        vtail_area = _vtail_area_total(geometry)
         tail_area_total = canard_area + vtail_area
         geometry["sizing"].update({
             "canard_area_m2": round(canard_area, 4),
@@ -845,8 +907,7 @@ def size_aircraft(spec: DesignSpec, optimization: dict[str, Any] | None = None) 
             {"component": "vtail", "name": "Rudder", "u_start": 0.0, "u_end": 1.0,
              "chord_fraction": 0.30},
         ]
-        vtail_geom = geometry.get("vtail_conventional") or {}
-        vtail_area = _tail_area(vtail_geom) if vtail_geom else 0.0
+        vtail_area = _vtail_area_total(geometry)
         tail_area_total = rear_area + vtail_area
         geometry["sizing"].update({
             "tandem_area_m2": round(rear_area, 4),
@@ -1094,6 +1155,7 @@ class Designer:
             "vtail": geometry.get("vtail"),
             "htail": geometry.get("htail"),
             "vtail_conventional": geometry.get("vtail_conventional"),
+            "vtail_right": geometry.get("vtail_right"),
             "sizing": geometry.get("sizing", {}),
             "control_surfaces": geometry.get("control_surfaces", []),
             "model_path": self.model_path,
